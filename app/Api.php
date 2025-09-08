@@ -19,6 +19,9 @@ class API extends Base {
         $this->name     = $this->plugin['Name'];
         $this->server   = $this->plugin['server'];
         $this->version  = $this->plugin['Version'];
+
+        global $wpdb;
+        $this->table = $wpdb->prefix . 'csm_servers';
     }
 
     /**
@@ -63,6 +66,60 @@ class API extends Base {
                     'type'     => 'string',
                 ],
             ],
+        ] );
+
+        /**
+         * Register all CRUD REST API routes.
+         *
+         * Routes:
+         * - GET    /servers           List servers (supports filter, search, sort, pagination)
+         * - POST   /servers           Create a new server
+         * - GET    /servers/<id>      Get details of a single server
+         * - PUT    /servers/<id>      Update an existing server
+         * - DELETE /servers/<id>      Delete a server
+         */
+        // List servers
+        $this->register_route( '/servers', [
+            'methods'    => 'GET',
+            'callback'   => [$this, 'list_servers'],
+            'permission' => '__return_true'
+        ] );
+
+        // Create a new server
+        $this->register_route( '/servers', [
+            'methods'    => 'POST',
+            'callback'   => [$this, 'create_server'],
+            'permission' => '__return_true',
+            'args'       => [
+                'name'       => ['required' => true, 'type' => 'string'],
+                'ip_address' => ['required' => true, 'type' => 'string'],
+                'provider'   => ['required' => true, 'type' => 'string'],
+                'status'     => ['required' => true, 'type' => 'string'],
+                'cpu_cores'  => ['required' => true, 'type' => 'integer'],
+                'ram_mb'     => ['required' => true, 'type' => 'integer'],
+                'storage_gb' => ['required' => true, 'type' => 'integer'],
+            ]
+        ] );
+
+        // Get a single server
+        $this->register_route( '/servers/(?P<id>\d+)', [
+            'methods'    => 'GET',
+            'callback'   => [$this, 'get_server'],
+            'permission' => '__return_true'
+        ] );
+
+        // Update a server
+        $this->register_route( '/servers/(?P<id>\d+)', [
+            'methods'    => 'PUT',
+            'callback'   => [$this, 'update_server'],
+            'permission' => '__return_true'
+        ] );
+
+        // Delete a server
+        $this->register_route( '/servers/(?P<id>\d+)', [
+            'methods'    => 'DELETE',
+            'callback'   => [$this, 'delete_server'],
+            'permission' => '__return_true'
         ] );
     }
 
@@ -148,5 +205,169 @@ class API extends Base {
             'username' => $user->user_login,
             'email'    => $user->user_email
         ], 200);
+    }
+
+    /**
+     * List servers with optional filter, search, sort, and pagination.
+     *
+     * Query parameters:
+     * - provider: filter by provider (aws|digitalocean|vultr|other)
+     * - status: filter by status (active|inactive|maintenance)
+     * - search: search by server name or IP
+     * - page: pagination page number
+     * - per_page: items per page (max 100)
+     *
+     * @param \WP_REST_Request $request
+     * @return \WP_REST_Response
+     */
+    public function list_servers( $request ) {
+        global $wpdb;
+
+        $page = max(1, (int) ($request->get_param('page') ?? 1));
+        $per_page = min(100, (int) ($request->get_param('per_page') ?? 10));
+        $offset = ($page - 1) * $per_page;
+
+        $where = [];
+        $args = [];
+
+        // Filter by provider
+        if ($provider = $request->get_param('provider')) {
+            $where[] = 'provider = %s';
+            $args[] = $provider;
+        }
+
+        // Filter by status
+        if ($status = $request->get_param('status')) {
+            $where[] = 'status = %s';
+            $args[] = $status;
+        }
+
+        // Search by name or IP
+        if ($search = $request->get_param('search')) {
+            $where[] = '(name LIKE %s OR ip_address LIKE %s)';
+            $args[] = '%' . $wpdb->esc_like($search) . '%';
+            $args[] = '%' . $wpdb->esc_like($search) . '%';
+        }
+
+        $sql = "SELECT * FROM {$this->table}";
+        if ($where) $sql .= " WHERE " . implode(' AND ', $where);
+        $sql .= " ORDER BY created_at DESC LIMIT %d OFFSET %d";
+        $args[] = $per_page;
+        $args[] = $offset;
+
+        $servers = $wpdb->get_results( $wpdb->prepare($sql, ...$args) );
+
+        return $this->response_success( $servers );
+    }
+
+    /**
+     * Retrieve details of a single server by ID.
+     *
+     * @param \WP_REST_Request $request
+     * @return \WP_REST_Response
+     */
+    public function get_server( $request ) {
+        global $wpdb;
+        $id = (int) $request['id'];
+
+        $server = $wpdb->get_row( $wpdb->prepare("SELECT * FROM {$this->table} WHERE id = %d", $id) );
+        if (!$server) return $this->response_error('Server not found.');
+
+        return $this->response_success($server);
+    }
+
+    /**
+     * Create a new server entry.
+     *
+     * Enforces:
+     * - Unique name per provider
+     * - Unique valid IP address
+     * - Resource sanity checks
+     * - Valid provider and status values
+     *
+     * @param \WP_REST_Request $request
+     * @return \WP_REST_Response
+     */
+    public function create_server( $request ) {
+            
+            // Get request data
+            $data = $request->get_params();
+
+            // Validate server data before insert
+            $error = $this->validate_server_data( $data, null, $this->table );
+            if ( $error ) {
+                return $this->response_error( $error );
+            }
+
+            // Insert into database
+            $inserted = $wpdb->insert(
+                $table,
+                [
+                    'name'       => sanitize_text_field( $data['name'] ),
+                    'ip_address' => sanitize_text_field( $data['ip_address'] ),
+                    'provider'   => sanitize_text_field( $data['provider'] ),
+                    'status'     => sanitize_text_field( $data['status'] ),
+                    'cpu_cores'  => intval( $data['cpu_cores'] ),
+                    'ram_mb'     => intval( $data['ram_mb'] ),
+                    'storage_gb' => intval( $data['storage_gb'] ),
+                    'created_at' => current_time( 'mysql' ),
+                    'updated_at' => current_time( 'mysql' ),
+                ]
+            );
+
+            // If insert failed
+            if ( ! $inserted ) {
+                return $this->response_error( 'Failed to create server.' );
+            }
+
+            // Return success with inserted server ID
+            return $this->response_success( [ 'id' => $wpdb->insert_id ], 201 );
+        }
+
+
+    /**
+     * Update an existing server by ID.
+     *
+     * @param \WP_REST_Request $request
+     * @return \WP_REST_Response
+     */
+    public function update_server( $request ) {
+        global $wpdb;
+        $id = (int) $request['id'];
+        $data = $request->get_params();
+
+        $error = $this->validate_server_data($data, $id, $this->table);
+        if ($error) return $this->response_error($error);
+
+        $updated = $wpdb->update($this->table, [
+            'name'       => $data['name'],
+            'ip_address' => $data['ip_address'],
+            'provider'   => $data['provider'],
+            'status'     => $data['status'],
+            'cpu_cores'  => $data['cpu_cores'],
+            'ram_mb'     => $data['ram_mb'],
+            'storage_gb' => $data['storage_gb'],
+            'updated_at' => current_time('mysql'),
+        ], ['id' => $id]);
+
+        if ($updated === false) return $this->response_error('Failed to update server.');
+
+        return $this->response_success(['id' => $id]);
+    }
+
+    /**
+     * Delete a server by ID.
+     *
+     * @param \WP_REST_Request $request
+     * @return \WP_REST_Response
+     */
+    public function delete_server( $request ) {
+        global $wpdb;
+        $id = (int) $request['id'];
+
+        $deleted = $wpdb->delete($this->table, ['id' => $id]);
+        if (!$deleted) return $this->response_error('Failed to delete server or server not found.');
+
+        return $this->response_success(['id' => $id]);
     }
 }

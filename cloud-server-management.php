@@ -1,13 +1,13 @@
 <?php
 /**
- * Plugin Name: Cloud Server Management
- * Description: Clud server management
- * Plugin URI: https://techwithmahbub.com/
- * Author: WpPluginHub, Inc
- * Author URI: https://techwithmahbub.com/
- * Version: 0.9
- * Text Domain: cloud-server-management
- * Domain Path: /languages
+ * Plugin Name 	: Cloud Server Management
+ * Description	: Clud server management
+ * Plugin URI 	: https://techwithmahbub.com/
+ * Author		: Mahbub
+ * Author URI 	: https://techwithmahbub.com/
+ * Version 		: 0.9
+ * Text Domain	: cloud-server-management
+ * Domain Path	: /languages
  */
 
 namespace CloudServerManagement;
@@ -106,7 +106,6 @@ final class Plugin {
 		$this->plugin['min_php']		= '5.6';
 		$this->plugin['min_wp']			= '4.0';
 		$this->plugin['icon']			= CLOUD_SERVER_MANAGEMENT_ASSET . '/img/icon.png';
-		$this->plugin['depends']		= [ 'woocommerce/woocommerce.php' => 'WooCommerce' ];
 		
 	}
 

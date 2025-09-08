@@ -19,9 +19,6 @@ class Database extends Base {
         $this->slug      = $this->plugin['TextDomain'];
         $this->name      = $this->plugin['Name'];
         $this->version   = $this->plugin['Version'];
-
-        // // Hook table creation on plugin activation
-        // register_activation_hook( $this->plugin['File'], [ $this, 'create_servers_table' ] );
     }
 
     /**
