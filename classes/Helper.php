@@ -2,7 +2,7 @@
 /**
  * All helpers functions
  */
-namespace WpPluginHub\Cloud_Server_Management;
+namespace CloudServerManagement;
 
 /**
  * if accessed directly, exit.
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * @package Plugin
  * @subpackage Helper
- * @author WpPluginHub <mahbubmr500@gmail.com>
+ * @author <mahbubmr500@gmail.com>
  */
 class Helper {
 

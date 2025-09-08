@@ -2,7 +2,7 @@
 /**
  * All AJAX related functions
  */
-namespace WpPluginHub\Cloud_Server_Management\App;
+namespace CloudServerManagement\App;
 use WpPluginHub\Plugin\Base;
 
 /**

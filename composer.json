@@ -10,9 +10,9 @@
     },
     "autoload": {
         "psr-4": {
-            "WpPluginHub\\Cloud_Server_Management\\" : "classes/",
-            "WpPluginHub\\Cloud_Server_Management\\App\\" : "app/",
-            "WpPluginHub\\Cloud_Server_Management\\API\\" : "api/"
+            "CloudServerManagement\\" : "classes/",
+            "CloudServerManagement\\App\\" : "app/",
+            "CloudServerManagement\\API\\" : "api/"
         },
         "files": [ "inc/functions.php" ]
     }

@@ -10,7 +10,7 @@
  * Domain Path: /languages
  */
 
-namespace WpPluginHub\Cloud_Server_Management;
+namespace CloudServerManagement;
 use WpPluginHub\Plugin\Notice;
 
 /**

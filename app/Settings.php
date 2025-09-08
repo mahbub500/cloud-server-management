@@ -2,8 +2,8 @@
 /**
  * All settings related functions
  */
-namespace WpPluginHub\Cloud_Server_Management\App;
-use WpPluginHub\Cloud_Server_Management\Helper;
+namespace CloudServerManagement\App;
+use CloudServerManagement\Helper;
 use WpPluginHub\Plugin\Base;
 use WpPluginHub\Plugin\Settings as Settings_API;
 

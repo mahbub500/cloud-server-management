@@ -2,7 +2,7 @@
 /**
  * All common functions to load in both admin and front
  */
-namespace WpPluginHub\Cloud_Server_Management\App;
+namespace CloudServerManagement\App;
 use WpPluginHub\Plugin\Base;
 
 /**

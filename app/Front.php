@@ -2,9 +2,9 @@
 /**
  * All public facing functions
  */
-namespace WpPluginHub\Cloud_Server_Management\App;
+namespace CloudServerManagement\App;
 use WpPluginHub\Plugin\Base;
-use WpPluginHub\Cloud_Server_Management\Helper;
+use CloudServerManagement\Helper;
 /**
  * if accessed directly, exit.
  */
