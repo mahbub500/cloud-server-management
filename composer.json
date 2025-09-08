@@ -1,0 +1,19 @@
+{
+    "authors": [
+        {
+            "name": "Mahbub",
+            "email": "mahbubmr500@gmail.com"
+        }
+    ],
+    "require": {
+        "wppluginhub/plugin": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "WpPluginHub\\Cloud_Server_Management\\" : "classes/",
+            "WpPluginHub\\Cloud_Server_Management\\App\\" : "app/",
+            "WpPluginHub\\Cloud_Server_Management\\API\\" : "api/"
+        },
+        "files": [ "inc/functions.php" ]
+    }
+}
