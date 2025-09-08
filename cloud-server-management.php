@@ -2,9 +2,9 @@
 /**
  * Plugin Name: Cloud Server Management
  * Description: Clud server management
- * Plugin URI: https://codexpert.io
+ * Plugin URI: https://techwithmahbub.com/
  * Author: WpPluginHub, Inc
- * Author URI: https://codexpert.io
+ * Author URI: https://techwithmahbub.com/
  * Version: 0.9
  * Text Domain: cloud-server-management
  * Domain Path: /languages
@@ -184,7 +184,8 @@ final class Plugin {
 		 *
 		 * Executes on both the admin area and front area
 		 */
-		$common = new App\Common( $this->plugin );
+		$Database = new App\Database( $this->plugin );
+		$Database->activate('create_servers_table');
 
 		/**
 		 * Api Hook
