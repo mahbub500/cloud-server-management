@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
 trait Rest {
 
 	// Namespace for the REST API routes specific to this plugin.
-	public $namespace = 'easycommerce/v1';
+	public $namespace = 'csm/v1';
 
 	/**
 	 * Registers a new REST API route.

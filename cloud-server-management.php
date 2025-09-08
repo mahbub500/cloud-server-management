@@ -187,6 +187,14 @@ final class Plugin {
 		$common = new App\Common( $this->plugin );
 
 		/**
+		 * Api Hook
+		 *
+		 * Executes on both the admin area and front area
+		 */
+		$api = new App\Api( $this->plugin );
+		$api->action( 'rest_api_init', 'register_routes' );
+
+		/**
 		 * AJAX related hooks
 		 */
 		$ajax = new App\AJAX( $this->plugin );
