@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Cloud Server Management
- * Description: Clud server management
+ * Description: Cloud server management
  * Plugin URI: https://codexpert.io
  * Author: WpPluginHub, Inc
  * Author URI: https://codexpert.io
