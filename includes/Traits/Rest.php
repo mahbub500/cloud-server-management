@@ -98,16 +98,31 @@ trait Rest {
 	        }
 	    }
 
-	    // ✅ Validate uniqueness only if name+provider are being updated
-	    if ( isset( $data['name'], $data['provider'] ) ) {
-	        $query = $wpdb->prepare(
-	            "SELECT id FROM $table WHERE name = %s AND provider = %s" . ( $id ? " AND id != %d" : "" ),
-	            $id ? [ $data['name'], $data['provider'], $id ] : [ $data['name'], $data['provider'] ]
-	        );
-	        if ( $wpdb->get_var( $query ) ) {
-	            return 'Server name must be unique per provider.';
-	        }
-	    }
+	    // ✅ Validate uniqueness for name+provider
+		if ( isset( $data['name'] ) || isset( $data['provider'] ) ) {
+		    // Fetch current provider/name if one is missing (on update only)
+		    if ( $id ) {
+		        $current = $wpdb->get_row( $wpdb->prepare(
+		            "SELECT name, provider FROM $table WHERE id = %d",
+		            $id
+		        ), ARRAY_A );
+		    }
+
+		    $name     = isset( $data['name'] ) ? $data['name'] : ( $current['name'] ?? null );
+		    $provider = isset( $data['provider'] ) ? $data['provider'] : ( $current['provider'] ?? null );
+
+		    if ( $name && $provider ) {
+		        $query = $wpdb->prepare(
+		            "SELECT id FROM $table WHERE name = %s AND provider = %s" . ( $id ? " AND id != %d" : "" ),
+		            $id ? [ $name, $provider, $id ] : [ $name, $provider ]
+		        );
+		        if ( $wpdb->get_var( $query ) ) {
+		            return 'Server name "' . $name  . '" must be unique per provider "' . $provider . '".';
+
+		        }
+		    }
+		}
+
 
 	    // ✅ Validate IP if provided
 	    if ( isset( $data['ip_address'] ) ) {
