@@ -1,17 +1,30 @@
 <?php
 namespace CloudServerManagement\App;
 
+
+/**
+ * Database class to handle plugin tables
+ */
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-class Activator {
+class Database {
+
+    public $plugin;
+
+    public function __construct( $plugin ) {
+        $this->plugin    = $plugin;
+        $this->slug      = $this->plugin['TextDomain'];
+        $this->name      = $this->plugin['Name'];
+        $this->version   = $this->plugin['Version'];
+    }
 
     /**
-     * Fired during plugin activation
+     * Create the csm_servers table
      */
-    public static function activate() {
-         global $wpdb;
+    public function create_servers_table() {
+        global $wpdb;
         $table_name = $wpdb->prefix . 'csm_servers';
         $charset_collate = $wpdb->get_charset_collate();
 

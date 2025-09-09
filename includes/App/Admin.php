@@ -3,8 +3,6 @@
  * All admin facing functions
  */
 namespace CloudServerManagement\App;
-use WpPluginHub\Plugin\Base;
-use WpPluginHub\Plugin\Metabox;
 
 /**
  * if accessed directly, exit.
@@ -16,21 +14,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * @package Plugin
  * @subpackage Admin
- * @author WpPluginHub <mahbubmr500@gmail.com>
+ * @author Mahbub <mahbubmr500@gmail.com>
  */
-class Admin extends Base {
+class Admin {
 
 	public $plugin;
 
 	/**
-	 * Constructor function
+	 * Init function
 	 */
-	public function __construct( $plugin ) {
-		$this->plugin	= $plugin;
-		$this->slug		= $this->plugin['TextDomain'];
-		$this->name		= $this->plugin['Name'];
-		$this->server	= $this->plugin['server'];
-		$this->version	= $this->plugin['Version'];
+	public function init() {
+	
 	}
 
 	/**

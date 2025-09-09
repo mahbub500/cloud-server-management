@@ -3,8 +3,8 @@
  * All public facing functions
  */
 namespace CloudServerManagement\App;
-use WpPluginHub\Plugin\Base;
 use CloudServerManagement\Helper;
+
 /**
  * if accessed directly, exit.
  */
@@ -15,23 +15,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * @package Plugin
  * @subpackage Front
- * @author WpPluginHub <mahbubmr500@gmail.com>
+ * @author Mahbub <mahbubmr500@gmail.com>
  */
-class Front extends Base {
+class Front {
 
-	public $plugin;
+	 /**
+     * Initialize hooks
+     */
+    public function init() {
+        
+    }
 
-	/**
-	 * Constructor function
-	 */
-	public function __construct( $plugin ) {
-		$this->plugin	= $plugin;
-		$this->slug		= $this->plugin['TextDomain'];
-		$this->name		= $this->plugin['Name'];
-		$this->version	= $this->plugin['Version'];
-	}
 
-	public function head() {}
 	
 	/**
 	 * Enqueue JavaScripts and stylesheets
