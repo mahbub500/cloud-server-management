@@ -10,9 +10,7 @@
     },
     "autoload": {
         "psr-4": {
-            "CloudServerManagement\\" : "classes/",
-            "CloudServerManagement\\App\\" : "app/",
-            "CloudServerManagement\\Traits\\" : "Traits/"
+            "CloudServerManagement\\": "includes/"
         },
         "files": [ "inc/functions.php" ]
     }

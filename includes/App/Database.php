@@ -1,7 +1,6 @@
 <?php
 namespace CloudServerManagement\App;
 
-use WpPluginHub\Plugin\Base;
 
 /**
  * Database class to handle plugin tables
@@ -10,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-class Database extends Base {
+class Database {
 
     public $plugin;
 

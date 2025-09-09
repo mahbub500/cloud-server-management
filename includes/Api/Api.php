@@ -1,12 +1,12 @@
 <?php
-namespace CloudServerManagement\App;
+namespace CloudServerManagement;
 
 defined( 'ABSPATH' ) || exit;
 
 use CloudServerManagement\Traits\Rest;
-use WpPluginHub\Plugin\Base;
 
-class API extends Base {
+
+class API {
 
     use Rest;
 

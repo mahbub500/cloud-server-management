@@ -3,8 +3,6 @@
  * All admin facing functions
  */
 namespace CloudServerManagement\App;
-use WpPluginHub\Plugin\Base;
-use WpPluginHub\Plugin\Metabox;
 
 /**
  * if accessed directly, exit.
@@ -16,9 +14,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * @package Plugin
  * @subpackage Admin
- * @author WpPluginHub <mahbubmr500@gmail.com>
+ * @author Mahbub <mahbubmr500@gmail.com>
  */
-class Admin extends Base {
+class Admin {
 
 	public $plugin;
 

@@ -1,4 +1,6 @@
 <?php
+namespace CloudServerManagement\Traits;
+
 class Auth_Token {
 
     /**
