@@ -5,12 +5,14 @@ defined( 'ABSPATH' ) || exit;
 
 use CloudServerManagement\Traits\Rest;
 use CloudServerManagement\Traits\Hook;
+use CloudServerManagement\Traits\Token;
 
 
 class API {
 
     use Rest;
     use Hook;
+    use Token;
 
     /**
      * Database table name
@@ -86,7 +88,7 @@ class API {
         $this->register_route( '/servers', [
             'methods'    => 'GET',
             'callback'   => [$this, 'list_servers'],
-            'permission' => '__return_true'
+            'permission' => [ $this, 'check_permission' ],
         ] );
 
         // Create a new server
@@ -181,10 +183,8 @@ class API {
      */
     public function login_user( $request ) {
 
-        $email    = $request->get_param('email');
+        $email    = sanitize_email( $request->get_param('email') );
         $password = $request->get_param('password');
-
-        $email = sanitize_email( $email );
 
         // Validate email
         if ( ! is_email( $email ) ) {
@@ -198,16 +198,22 @@ class API {
             return $this->response_error( 'No user found with this email.' );
         }
 
-        // Check password
-        if ( ! wp_check_password( $password, $user->user_pass, $user->ID ) ) {
+        $user_id = $user->ID;
+
+        // ✅ Check password first
+        if ( ! wp_check_password( $password, $user->user_pass, $user_id ) ) {
             return $this->response_error( 'Incorrect password.' );
         }
 
-        // Success response
+        // ✅ Generate token only after password is valid
+        $token = $this->generate_token( $user_id );
+
+        // Success response with token
         return $this->response_success([
-            'user_id'  => $user->ID,
+            'user_id'  => $user_id,
             'username' => $user->user_login,
-            'email'    => $user->user_email
+            'email'    => $user->user_email,
+            'token'    => $token,
         ], 200);
     }
 
@@ -260,6 +266,7 @@ class API {
         $args[] = $offset;
 
         $servers = $wpdb->get_results( $wpdb->prepare($sql, ...$args) );
+
 
         return $this->response_success( $servers );
     }

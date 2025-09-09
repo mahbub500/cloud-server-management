@@ -24,10 +24,10 @@ trait Rest {
 	public function register_route( $path, $args ) {
 
 		// // If a permission callback is specified in the arguments, set it correctly.
-		// if ( isset( $args['permission'] ) ) {
-		// 	$args['permission_callback'] = $args['permission'];
-		// 	unset( $args['permission'] );
-		// }
+		if ( isset( $args['permission'] ) ) {
+			$args['permission_callback'] = $args['permission'];
+			unset( $args['permission'] );
+		}
 
 		// Register the route with the specified namespace, path, and arguments.
 		register_rest_route( $this->namespace, $path, $args );
@@ -170,6 +170,47 @@ trait Rest {
 
 	    // ✅ All good
 	    return null;
+	}
+
+	/**
+	 * Get user ID from Authorization header.
+	 *
+	 * @param WP_REST_Request $request
+	 * @return int|false User ID if valid, false otherwise.
+	 */
+	public function authenticate_request( $request ) {
+	    $auth_header = $request->get_header( 'authorization' );
+
+	    if ( ! $auth_header || stripos( $auth_header, 'Bearer ' ) !== 0 ) {
+	        return false;
+	    }
+
+	    // Extract token from "Bearer <token>"
+	    $token = trim( str_ireplace( 'Bearer', '', $auth_header ) );
+
+	    if ( empty( $token ) ) {
+	        return false;
+	    }
+
+	    return $this->validate_token( $token ); 
+	}
+
+	public function check_permission( $request ) {
+	    $user_id = $this->authenticate_request( $request );
+
+	    if ( ! $user_id ) {
+	    	$data = [
+	    		'unauthorized', 
+	    		'Invalid or expired token.' 
+	    	];
+	    	 return $this->response_error( $request, [ 'status' => 401 ] );
+	        
+	    }
+
+	    // Optionally store the authenticated user ID for later
+	    $request->set_param( 'user_id', $user_id );
+
+	    return true;
 	}
 
 }
