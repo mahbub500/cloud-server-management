@@ -182,14 +182,15 @@ trait Rest {
 	    $auth_header = $request->get_header( 'authorization' );
 
 	    if ( ! $auth_header || stripos( $auth_header, 'Bearer ' ) !== 0 ) {
-	        return false;
+	        return $this->response_error( [ 'Please add authorization ', 
+	        	 'In Headers add authorization: Bearer $token' ] );
 	    }
 
 	    // Extract token from "Bearer <token>"
 	    $token = trim( str_ireplace( 'Bearer', '', $auth_header ) );
 
 	    if ( empty( $token ) ) {
-	        return false;
+	        return $this->response_error( 'Please add authorization ' );
 	    }
 
 	    return $this->validate_token( $token ); 
