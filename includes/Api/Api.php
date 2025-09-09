@@ -13,14 +13,19 @@ class API {
     use Hook;
 
     /**
+     * Database table name
+     * @var string
+     */
+    protected $table;
+
+    /**
      * Constructor function
      */
     public function __construct() {
-
-        $this->action( 'rest_api_init', [ $this,'register_routes' ] );
-       
         global $wpdb;
         $this->table = $wpdb->prefix . 'csm_servers';
+
+        $this->action( 'rest_api_init', [ $this,'register_routes' ] );
     }
 
     /**
@@ -288,12 +293,13 @@ class API {
      * @return \WP_REST_Response
      */
     public function create_server( $request ) {
-            
+            global $wpdb;
             // Get request data
             $data = $request->get_params();
+            $table = $this->table;
 
             // Validate server data before insert
-            $error = $this->validate_server_data( $data, null, $this->table );
+            $error = $this->validate_server_data( $data, null, $table );
             if ( $error ) {
                 return $this->response_error( $error );
             }

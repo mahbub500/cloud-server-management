@@ -75,6 +75,7 @@ trait Rest {
      * @return string|null Error message if validation fails, otherwise null.
      */
     public function validate_server_data( $data, $id = null, $table ) {
+    	global $wpdb;
 
         // ✅ Validate name: required & unique per provider
         if ( empty( $data['name'] ) ) {
