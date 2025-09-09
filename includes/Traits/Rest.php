@@ -74,74 +74,87 @@ trait Rest {
      *
      * @return string|null Error message if validation fails, otherwise null.
      */
-    public function validate_server_data( $data, $id = null, $table ) {
-    	global $wpdb;
+    public function validate_server_data( $data, $id = null, $table, $partial = false ) {
+	    global $wpdb;
 
-        $required_fields = [
+	    $required_fields = [
 	        'name'       => 'Server name is required.',
 	        'provider'   => 'Provider name is required.',
 	        'status'     => 'Status is required.',
 	        'ip_address' => 'IP Address is required.',
-			'cpu_cores'  => 'CPU cores data is required.',
-			'ram_mb'     => 'RAM data is required.',
+	        'cpu_cores'  => 'CPU cores data is required.',
+	        'ram_mb'     => 'RAM data is required.',
 	        'storage_gb' => 'Storage data is required.',
 	    ];
 
+	    // 🔹 For create: require all fields
+	    // 🔹 For update: require only the fields that are present in $data
 	    foreach ( $required_fields as $field => $error_message ) {
-	        if ( empty( $data[ $field ] ) ) {
+	        if ( ! $partial && empty( $data[ $field ] ) ) {
+	            return $error_message;
+	        }
+	        if ( $partial && array_key_exists( $field, $data ) && empty( $data[ $field ] ) ) {
 	            return $error_message;
 	        }
 	    }
 
-        $query = $wpdb->prepare(
-            "SELECT id FROM $table WHERE name = %s AND provider = %s" . ( $id ? " AND id != %d" : "" ),
-            $id ? [ $data['name'], $data['provider'], $id ] : [ $data['name'], $data['provider'] ]
-        );
-        $exists = $wpdb->get_var( $query );
-        if ( $exists ) {
-            return 'Server name must be unique per provider.';
-        }
+	    // ✅ Validate uniqueness only if name+provider are being updated
+	    if ( isset( $data['name'], $data['provider'] ) ) {
+	        $query = $wpdb->prepare(
+	            "SELECT id FROM $table WHERE name = %s AND provider = %s" . ( $id ? " AND id != %d" : "" ),
+	            $id ? [ $data['name'], $data['provider'], $id ] : [ $data['name'], $data['provider'] ]
+	        );
+	        if ( $wpdb->get_var( $query ) ) {
+	            return 'Server name must be unique per provider.';
+	        }
+	    }
 
-        // ✅ Validate IP: required, valid IPv4, and unique
-        if ( empty( $data['ip_address'] ) || ! filter_var( $data['ip_address'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
-            return 'A valid IPv4 address is required.';
-        }
+	    // ✅ Validate IP if provided
+	    if ( isset( $data['ip_address'] ) ) {
+	        if ( ! filter_var( $data['ip_address'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ) {
+	            return 'A valid IPv4 address is required.';
+	        }
 
-        $query = $wpdb->prepare(
-            "SELECT id FROM $table WHERE ip_address = %s" . ( $id ? " AND id != %d" : "" ),
-            $id ? [ $data['ip_address'], $id ] : [ $data['ip_address'] ]
-        );
-        $exists = $wpdb->get_var( $query );
-        if ( $exists ) {
-            return 'IP address must be unique.';
-        }
+	        $query = $wpdb->prepare(
+	            "SELECT id FROM $table WHERE ip_address = %s" . ( $id ? " AND id != %d" : "" ),
+	            $id ? [ $data['ip_address'], $id ] : [ $data['ip_address'] ]
+	        );
+	        if ( $wpdb->get_var( $query ) ) {
+	            return 'IP address must be unique.';
+	        }
+	    }
 
-        // ✅ Validate provider: must be one of the allowed values
-        $valid_providers = [ 'aws', 'digitalocean', 'vultr', 'other' ];
-        if ( empty( $data['provider'] ) || ! in_array( $data['provider'], $valid_providers, true ) ) {
-            return 'Invalid provider. Allowed values: aws, digitalocean, vultr, other.';
-        }
+	    // ✅ Validate provider if provided
+	    if ( isset( $data['provider'] ) ) {
+	        $valid_providers = [ 'aws', 'digitalocean', 'vultr', 'other' ];
+	        if ( ! in_array( $data['provider'], $valid_providers, true ) ) {
+	            return 'Invalid provider. Allowed values: aws, digitalocean, vultr, other.';
+	        }
+	    }
 
-        // ✅ Validate status: must be one of the allowed values
-        $valid_statuses = [ 'active', 'inactive', 'maintenance' ];
-        if ( empty( $data['status'] ) || ! in_array( $data['status'], $valid_statuses, true ) ) {
-            return 'Invalid status. Allowed values: active, inactive, maintenance.';
-        }
+	    // ✅ Validate status if provided
+	    if ( isset( $data['status'] ) ) {
+	        $valid_statuses = [ 'active', 'inactive', 'maintenance' ];
+	        if ( ! in_array( $data['status'], $valid_statuses, true ) ) {
+	            return 'Invalid status. Allowed values: active, inactive, maintenance.';
+	        }
+	    }
 
-        // ✅ Validate resources within sanity ranges
-        if ( empty( $data['cpu_cores'] ) || $data['cpu_cores'] < 1 || $data['cpu_cores'] > 128 ) {
-            return 'CPU cores must be between 1 and 128.';
-        }
+	    // ✅ Validate resources only if provided
+	    if ( isset( $data['cpu_cores'] ) && ( $data['cpu_cores'] < 1 || $data['cpu_cores'] > 128 ) ) {
+	        return 'CPU cores must be between 1 and 128.';
+	    }
 
-        if ( empty( $data['ram_mb'] ) || $data['ram_mb'] < 512 || $data['ram_mb'] > 1048576 ) {
-            return 'RAM must be between 512 MB and 1,048,576 MB.';
-        }
+	    if ( isset( $data['ram_mb'] ) && ( $data['ram_mb'] < 512 || $data['ram_mb'] > 1048576 ) ) {
+	        return 'RAM must be between 512 MB and 1,048,576 MB.';
+	    }
 
-        if ( empty( $data['storage_gb'] ) || $data['storage_gb'] < 10 || $data['storage_gb'] > 1048576 ) {
-            return 'Storage must be between 10 GB and 1,048,576 GB.';
-        }
+	    if ( isset( $data['storage_gb'] ) && ( $data['storage_gb'] < 10 || $data['storage_gb'] > 1048576 ) ) {
+	        return 'Storage must be between 10 GB and 1,048,576 GB.';
+	    }
 
-        // ✅ All good, no errors
-        return null;
-    }
+	    // ✅ All good
+	    return null;
+	}
+
 }

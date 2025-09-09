@@ -338,27 +338,57 @@ class API {
      */
     public function update_server( $request ) {
         global $wpdb;
-        $id = (int) $request['id'];
+        $id   = (int) $request['id'];
         $data = $request->get_params();
 
-        $error = $this->validate_server_data($data, $id, $this->table);
-        if ($error) return $this->response_error($error);
+        if ( empty( $id ) ) {
+            return $this->response_error('Server ID is required.');
+        }
 
-        $updated = $wpdb->update($this->table, [
-            'name'       => $data['name'],
-            'ip_address' => $data['ip_address'],
-            'provider'   => $data['provider'],
-            'status'     => $data['status'],
-            'cpu_cores'  => $data['cpu_cores'],
-            'ram_mb'     => $data['ram_mb'],
-            'storage_gb' => $data['storage_gb'],
-            'updated_at' => current_time('mysql'),
-        ], ['id' => $id]);
+        // ✅ Check if server exists
+        $exists = $wpdb->get_var( $wpdb->prepare(
+            "SELECT COUNT(*) FROM {$this->table} WHERE id = %d",
+            $id
+        ) );
 
-        if ($updated === false) return $this->response_error('Failed to update server.');
+        if ( ! $exists ) {
+            return $this->response_error('Server not found.');
+        }
 
-        return $this->response_success(['id' => $id]);
+        // Validate only provided fields
+        $error = $this->validate_server_data( $data, $id, $this->table, true );
+        if ( $error ) return $this->response_error( $error );
+
+        // Build update data dynamically
+        $allowed_fields = [ 'name', 'ip_address', 'provider', 'status', 'cpu_cores', 'ram_mb', 'storage_gb' ];
+        $update_data    = [];
+
+        foreach ( $allowed_fields as $field ) {
+            if ( array_key_exists( $field, $data ) ) {
+                $update_data[ $field ] = $data[ $field ];
+            }
+        }
+
+        // Always update timestamp
+        $update_data['updated_at'] = current_time('mysql');
+
+        if ( empty( $update_data ) ) {
+            return $this->response_error('No valid fields provided to update.');
+        }
+
+        $updated = $wpdb->update( $this->table, $update_data, [ 'id' => $id ] );
+
+        if ( $updated === false ) {
+            return $this->response_error('Failed to update server.');
+        }
+
+        return $this->response_success([
+            'id'             => $id,
+            'updated_fields' => array_keys($update_data),
+        ]);
     }
+
+
 
     /**
      * Delete a server by ID.
