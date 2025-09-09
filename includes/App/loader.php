@@ -8,16 +8,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Loader {
 
     public function run() {
-        // Admin
-        if ( is_admin() ) {
-            $admin = new Admin();
-            $admin->init();
-        }
-
-        // Front
-        $front = new Front();
-        $front->init();
-
         // API
         $rest = new API();
     }
