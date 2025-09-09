@@ -88,14 +88,14 @@ class API {
         $this->register_route( '/servers', [
             'methods'    => 'GET',
             'callback'   => [$this, 'list_servers'],
-            'permission' => [ $this, 'check_permission' ],
+            'permission' => [ $this, 'check_permission' ]
         ] );
 
         // Create a new server
         $this->register_route( '/servers', [
             'methods'    => 'POST',
             'callback'   => [$this, 'create_server'],
-            'permission' => '__return_true',
+            'permission' => [ $this, 'check_permission' ],
             'args'       => [
                 'name'       => ['required' => true, 'type' => 'string'],
                 'ip_address' => ['required' => true, 'type' => 'string'],
@@ -111,21 +111,21 @@ class API {
         $this->register_route( '/servers/(?P<id>\d+)', [
             'methods'    => 'GET',
             'callback'   => [$this, 'get_server'],
-            'permission' => '__return_true'
+            'permission' => [ $this, 'check_permission' ]
         ] );
 
         // Update a server
         $this->register_route( '/servers/(?P<id>\d+)', [
             'methods'    => 'PUT',
             'callback'   => [$this, 'update_server'],
-            'permission' => '__return_true'
+            'permission' => [ $this, 'check_permission' ],
         ] );
 
         // Delete a server
         $this->register_route( '/servers/(?P<id>\d+)', [
             'methods'    => 'DELETE',
             'callback'   => [$this, 'delete_server'],
-            'permission' => '__return_true'
+            'permission' => [ $this, 'check_permission' ],
         ] );
     }
 
