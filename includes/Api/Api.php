@@ -16,6 +16,8 @@ class API {
      * Constructor function
      */
     public function __construct() {
+
+        $this->action( 'rest_api_init', [ $this,'register_routes' ] );
        
         global $wpdb;
         $this->table = $wpdb->prefix . 'csm_servers';
