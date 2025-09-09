@@ -388,8 +388,6 @@ class API {
         ]);
     }
 
-
-
     /**
      * Delete a server by ID.
      *
