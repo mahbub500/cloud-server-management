@@ -1,5 +1,5 @@
 <?php
-namespace CloudServerManagement;
+namespace CloudServerManagement\App;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
