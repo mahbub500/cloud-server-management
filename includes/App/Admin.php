@@ -21,14 +21,10 @@ class Admin {
 	public $plugin;
 
 	/**
-	 * Constructor function
+	 * Init function
 	 */
-	public function __construct( $plugin ) {
-		$this->plugin	= $plugin;
-		$this->slug		= $this->plugin['TextDomain'];
-		$this->name		= $this->plugin['Name'];
-		$this->server	= $this->plugin['server'];
-		$this->version	= $this->plugin['Version'];
+	public function init() {
+	
 	}
 
 	/**

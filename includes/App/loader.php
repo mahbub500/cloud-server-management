@@ -1,6 +1,6 @@
 <?php
-namespace CloudServerManagement;
-
+namespace CloudServerManagement\App;
+use CloudServerManagement\API\API;
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
@@ -18,8 +18,7 @@ class Loader {
         $front = new Front();
         $front->init();
 
-        // // REST
-        // $rest = new REST();
-        // $rest->init();
+        // API
+        $rest = new API();
     }
 }

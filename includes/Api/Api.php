@@ -1,25 +1,22 @@
 <?php
-namespace CloudServerManagement;
+namespace CloudServerManagement\Api;
 
 defined( 'ABSPATH' ) || exit;
 
 use CloudServerManagement\Traits\Rest;
+use CloudServerManagement\Traits\Hook;
 
 
 class API {
 
     use Rest;
+    use Hook;
 
     /**
      * Constructor function
      */
-    public function __construct( $plugin ) {
-        $this->plugin   = $plugin;
-        $this->slug     = $this->plugin['TextDomain'];
-        $this->name     = $this->plugin['Name'];
-        $this->server   = $this->plugin['server'];
-        $this->version  = $this->plugin['Version'];
-
+    public function __construct() {
+       
         global $wpdb;
         $this->table = $wpdb->prefix . 'csm_servers';
     }

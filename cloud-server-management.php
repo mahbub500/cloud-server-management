@@ -1,13 +1,13 @@
 <?php
 /**
- * Plugin Name 	: Cloud Server Management
- * Description	: Clud server management
- * Plugin URI 	: https://techwithmahbub.com/
- * Author		: Mahbub
- * Author URI 	: https://techwithmahbub.com/
- * Version 		: 0.9
- * Text Domain	: cloud-server-management
- * Domain Path	: /languages
+ * Plugin Name: Cloud Server Management
+ * Description: Cloud server management
+ * Plugin URI: https://codexpert.io
+ * Author: WpPluginHub, Inc
+ * Author URI: https://codexpert.io
+ * Version: 0.9
+ * Text Domain: cloud-server-management
+ * Domain Path: /languages
  */
 
 namespace CloudServerManagement;
@@ -41,14 +41,15 @@ require_once CSM_PLUGIN_DIR . 'includes/functions.php';
 /**
  * Activation / Deactivation Hooks
  */
-register_activation_hook( __FILE__, array( __NAMESPACE__ . '\CSM_Activator', 'activate' ) );
-register_deactivation_hook( __FILE__, array( __NAMESPACE__ . '\CSM_Deactivator', 'deactivate' ) );
+register_activation_hook( __FILE__, array( __NAMESPACE__ . '\App\Activator', 'activate' ) );
+register_deactivation_hook( __FILE__, array( __NAMESPACE__ . '\App\Deactivator', 'deactivate' ) );
 
 /**
- * Initialize Plugin
+ * Run plugin when all plugins are loaded
  */
-function run_csm() {
-    $plugin = new CSM_Loader();
+add_action( 'plugins_loaded', __NAMESPACE__ . '\\csm_active' );
+
+function csm_active() {
+    $plugin = new \CloudServerManagement\App\Loader();
     $plugin->run();
 }
-run_csm();
