@@ -23,11 +23,11 @@ trait Rest {
 	 */
 	public function register_route( $path, $args ) {
 
-		// If a permission callback is specified in the arguments, set it correctly.
-		if ( isset( $args['permission'] ) ) {
-			$args['permission_callback'] = $args['permission'];
-			unset( $args['permission'] );
-		}
+		// // If a permission callback is specified in the arguments, set it correctly.
+		// if ( isset( $args['permission'] ) ) {
+		// 	$args['permission_callback'] = $args['permission'];
+		// 	unset( $args['permission'] );
+		// }
 
 		// Register the route with the specified namespace, path, and arguments.
 		register_rest_route( $this->namespace, $path, $args );
@@ -77,10 +77,21 @@ trait Rest {
     public function validate_server_data( $data, $id = null, $table ) {
     	global $wpdb;
 
-        // ✅ Validate name: required & unique per provider
-        if ( empty( $data['name'] ) ) {
-            return 'Server name is required.';
-        }
+        $required_fields = [
+	        'name'       => 'Server name is required.',
+	        'provider'   => 'Provider name is required.',
+	        'status'     => 'Status is required.',
+	        'ip_address' => 'IP Address is required.',
+			'cpu_cores'  => 'CPU cores data is required.',
+			'ram_mb'     => 'RAM data is required.',
+	        'storage_gb' => 'Storage data is required.',
+	    ];
+
+	    foreach ( $required_fields as $field => $error_message ) {
+	        if ( empty( $data[ $field ] ) ) {
+	            return $error_message;
+	        }
+	    }
 
         $query = $wpdb->prepare(
             "SELECT id FROM $table WHERE name = %s AND provider = %s" . ( $id ? " AND id != %d" : "" ),
