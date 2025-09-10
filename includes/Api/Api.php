@@ -6,9 +6,11 @@ defined( 'ABSPATH' ) || exit;
 use CloudServerManagement\Traits\Rest;
 use CloudServerManagement\Traits\Hook;
 use CloudServerManagement\Traits\Token;
+use WP_REST_Request;
+use WP_REST_Controller;
+use WP_REST_Server;
 
-
-class API {
+class API extends WP_REST_Controller{
 
     use Rest;
     use Hook;
@@ -20,12 +22,17 @@ class API {
      */
     protected $table;
 
+    // Namespace for the REST API routes specific to this class.
+    public $namespace = 'csm/v1';
+
     /**
      * Constructor function
      */
     public function __construct() {
         global $wpdb;
         $this->table = $wpdb->prefix . 'csm_servers';
+
+
 
         $this->action( 'rest_api_init', [ $this,'register_routes' ] );
     }
@@ -40,7 +47,7 @@ class API {
 
         // Signup route
         $this->register_route( '/signup', [
-            'methods'    => 'POST',
+            'methods'    => WP_REST_Server::CREATABLE, //POST
             'callback'   => [$this, 'signup_user'],
             'permission' => '__return_true', // Public route, no authentication required
             'args'       => [
@@ -54,11 +61,11 @@ class API {
                     'type'     => 'string',
                 ],
             ],
-        ] );
+        ], $this->namespace );
 
         // Login route
         $this->register_route( '/login', [
-            'methods'    => 'POST',
+            'methods'    => WP_REST_Server::CREATABLE, //POST,
             'callback'   => [$this, 'login_user'],
             'permission' => '__return_true', // Public route, no authentication required
             'args'       => [
@@ -72,7 +79,7 @@ class API {
                     'type'     => 'string',
                 ],
             ],
-        ] );
+        ], $this->namespace );
 
         /**
          * Register all CRUD REST API routes.
@@ -85,49 +92,72 @@ class API {
          * - DELETE /servers/<id>      Delete a server
          */
         // List servers
+        // ✅ Collection route: /servers
         $this->register_route( '/servers', [
-            'methods'    => 'GET',
-            'callback'   => [$this, 'list_servers'],
-            'permission' => [ $this, 'check_permission' ]
-        ] );
-
-        // Create a new server
-        $this->register_route( '/servers', [
-            'methods'    => 'POST',
-            'callback'   => [$this, 'create_server'],
-            'permission' => [ $this, 'check_permission' ],
+            'methods'    => WP_REST_Server::ALLMETHODS, // GET + POST
+            'callback'   => [$this, 'handle_servers'],
+            'permission' => [$this, 'check_permission'],
             'args'       => [
-                'name'       => ['required' => true, 'type' => 'string'],
-                'ip_address' => ['required' => true, 'type' => 'string'],
-                'provider'   => ['required' => true, 'type' => 'string'],
-                'status'     => ['required' => true, 'type' => 'string'],
-                'cpu_cores'  => ['required' => true, 'type' => 'integer'],
-                'ram_mb'     => ['required' => true, 'type' => 'integer'],
-                'storage_gb' => ['required' => true, 'type' => 'integer'],
+                'name'       => ['required' => false, 'type' => 'string'],
+                'ip_address' => ['required' => false, 'type' => 'string'],
+                'provider'   => ['required' => false, 'type' => 'string'],
+                'status'     => ['required' => false, 'type' => 'string'],
+                'cpu_cores'  => ['required' => false, 'type' => 'integer'],
+                'ram_mb'     => ['required' => false, 'type' => 'integer'],
+                'storage_gb' => ['required' => false, 'type' => 'integer'],
             ]
-        ] );
+        ], $this->namespace );
 
-        // Get a single server
+        // ✅ Single server route: /servers/{id}
         $this->register_route( '/servers/(?P<id>\d+)', [
-            'methods'    => 'GET',
-            'callback'   => [$this, 'get_server'],
-            'permission' => [ $this, 'check_permission' ]
-        ] );
+            'methods'    => WP_REST_Server::ALLMETHODS, // GET + PUT/PATCH + DELETE
+            'callback'   => [$this, 'handle_server'],
+            'permission' => [$this, 'check_permission'],
+        ], $this->namespace );
 
-        // Update a server
-        $this->register_route( '/servers/(?P<id>\d+)', [
-            'methods'    => 'PUT',
-            'callback'   => [$this, 'update_server'],
-            'permission' => [ $this, 'check_permission' ],
-        ] );
-
-        // Delete a server
-        $this->register_route( '/servers/(?P<id>\d+)', [
-            'methods'    => 'DELETE',
-            'callback'   => [$this, 'delete_server'],
-            'permission' => [ $this, 'check_permission' ],
-        ] );
     }
+
+    /**
+     * Handle collection requests (/servers)
+     */
+    public function handle_servers( $request ) {
+        $method = $request->get_method();
+
+        switch ( $method ) {
+            case 'GET':
+                return $this->list_servers( $request );
+
+            case 'POST':
+                return $this->create_server( $request );
+
+            default:
+                return $this->response_error( 'invalid_method : Method not allowed for single server.' );
+        }
+    }
+
+    /**
+     * Handle single server requests (/servers/{id})
+     */
+    public function handle_server( $request ) {
+        $method = $request->get_method();
+
+        switch ( $method ) {
+            case 'GET':
+                return $this->get_server( $request );
+
+            case 'POST': // if you want to allow POST updates
+            case 'PUT':
+            case 'PATCH':
+                return $this->update_server( $request );
+
+            case 'DELETE':
+                return $this->delete_server( $request );
+
+            default:
+            return $this->response_error( 'invalid_method : Method not allowed for single server.' );               
+        }
+    }
+
 
      /**
      * Handle user signup.

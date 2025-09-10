@@ -12,8 +12,7 @@ defined( 'ABSPATH' ) || exit;
  */
 trait Rest {
 
-	// Namespace for the REST API routes specific to this plugin.
-	public $namespace = 'csm/v1';
+	
 
 	/**
 	 * Registers a new REST API route.
@@ -21,7 +20,7 @@ trait Rest {
 	 * @param string $path The route path.
 	 * @param array  $args The route arguments.
 	 */
-	public function register_route( $path, $args ) {
+	public function register_route( $path, $args, $namespace ) {
 
 		// // If a permission callback is specified in the arguments, set it correctly.
 		if ( isset( $args['permission'] ) ) {
@@ -30,7 +29,7 @@ trait Rest {
 		}
 
 		// Register the route with the specified namespace, path, and arguments.
-		register_rest_route( $this->namespace, $path, $args );
+		register_rest_route( $namespace, $path, $args );
 	}
 
 	/**
