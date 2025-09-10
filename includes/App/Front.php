@@ -11,10 +11,9 @@ class Front {
     use Hook;
 
     public function __construct() {
-        $this->action( 'wp_head', 'head' );
-    }
+        $this->action( 'wp_head', [ $this,'head' ] );    }
 
     public function head(){
-        Utility::pri( 'Hi' );
+        // Utility::pri( 'Hi' );
     }
 }
