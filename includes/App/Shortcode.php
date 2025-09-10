@@ -10,11 +10,11 @@ class Shortcode {
     use Hook;
 
     public function __construct() {
-        $this->action( 'wp_head', [ $this,'head' ] );    
+        $this->shortcode( 'csm_app', [ $this,'csm_app' ] );    
             
     }
 
-    public function head(){
-        
+    public function csm_app(){
+         return '<div id="csm-app"></div>';
     }
 }
