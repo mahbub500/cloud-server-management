@@ -24,32 +24,6 @@ trait Token {
     }
 
     /**
-     * Get the auth token for a user if not expired.
-     *
-     * @param int $user_id The user ID.
-     * @return string|false Token string if valid, false otherwise.
-     */
-    public function get_token_by_user_id( $user_id ) {
-        $token  = get_user_meta( $user_id, '_auth_token', true );
-        $expiry = get_user_meta( $user_id, '_auth_token_expiry', true );
-
-        // No token found
-        if ( ! $token ) {
-            return false;
-        }
-
-        // Token expired
-        if ( $expiry && time() > $expiry ) {
-            delete_user_meta( $user_id, '_auth_token' );
-            delete_user_meta( $user_id, '_auth_token_expiry' );
-            return false;
-        }
-
-        // Token exists and valid
-        return $token;
-    }
-
-    /**
      * Validate the given authentication token.
      *
      * - Finds the user by token (stored in user meta).
@@ -116,5 +90,35 @@ trait Token {
 
         set_transient( $key, $count + 1, $window );
         return true;
+    }
+
+    /**
+     * Get the auth token for a user if not expired.
+     *
+     * @param int $user_id The user ID.
+     * @return string|false Token string if valid, false otherwise.
+     */
+    public function get_token_by_user_id( $user_id ) {
+        $token  = get_user_meta( $user_id, '_auth_token', true );
+        $expiry = get_user_meta( $user_id, '_auth_token_expiry', true );
+
+        // No token found
+        if ( ! $token ) {
+            return $this->response_error(
+                'Token Not Found'
+            );
+        }
+
+        // Token expired
+        if ( $expiry && time() > $expiry ) {
+            delete_user_meta( $user_id, '_auth_token' );
+            delete_user_meta( $user_id, '_auth_token_expiry' );
+            return $this->response_error(
+                'Token expired.'
+            );
+        }
+
+        // Token exists and valid
+        return $token;
     }
 }
