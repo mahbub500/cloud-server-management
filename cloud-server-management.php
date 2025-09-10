@@ -19,12 +19,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Essential Constants
  */
-define( __NAMESPACE__ . '\CSM_VERSION', '1.0.0' );
-define( __NAMESPACE__ . '\CSM_PLUGIN_FILE', __FILE__ );
-define( __NAMESPACE__ . '\CSM_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
-define( __NAMESPACE__ . '\CSM_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-define( __NAMESPACE__ . '\CSM_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-define( __NAMESPACE__ . '\CSM_ASSETS_URL', CSM_PLUGIN_URL . 'assets/' );
+define( 'CSM_VERSION', '1.0.0' );
+define( 'CSM_PLUGIN_FILE', __FILE__ );
+define( 'CSM_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
+define( 'CSM_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'CSM_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define( 'CSM_ASSETS_URL', CSM_PLUGIN_URL . 'assets/' );
 
 /**
  * Autoload (Composer)

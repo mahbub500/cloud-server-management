@@ -8,5 +8,4 @@ let csm_modal = ( show = true ) => {
 }
 
 jQuery(function($){
-	
 })
