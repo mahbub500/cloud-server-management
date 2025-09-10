@@ -105,7 +105,7 @@ trait Token {
     public function check_rate_limit( $user_id ) {
         $key    = 'rate_limit_' . $user_id;
         $limit  = 10;   // max requests
-        $window = 60;   // seconds
+        $window = MINUTE_IN_SECONDS;   // seconds
 
         $count = get_transient( $key ) ?: 0;
         if ( $count >= $limit ) {
