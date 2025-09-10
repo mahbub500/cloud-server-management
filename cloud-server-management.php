@@ -51,6 +51,6 @@ register_deactivation_hook( __FILE__, array( __NAMESPACE__ . '\App\Deactivator',
 add_action( 'plugins_loaded', __NAMESPACE__ . '\\csm_active' );
 
 function csm_active() {
-    $plugin = new \CloudServerManagement\App\Loader();
+    $plugin = new \CloudServerManagement\App\Controller\Loader();
     $plugin->run();
 }

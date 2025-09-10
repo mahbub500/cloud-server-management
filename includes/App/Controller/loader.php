@@ -1,6 +1,7 @@
 <?php
-namespace CloudServerManagement\App;
+namespace CloudServerManagement\App\Controller;
 use CloudServerManagement\API\API;
+use CloudServerManagement\App\Front;
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
