@@ -18,7 +18,7 @@ class Front {
     public function head(){
         $plugin_path = plugin_dir_path( __FILE__ );
 
-        // Utility::pri( CSM_ASSETS_URL );
+        // Utility::pri( CSM_PLUGIN_NAME );
     }
 
     public function enqueue_assets() {
@@ -32,9 +32,15 @@ class Front {
         wp_enqueue_script(
             'csm', 
             CSM_ASSETS_URL . 'js/index.js',
-            ['jquery'], 
+            ['wp-element'], 
             CSM_VERSION,
             true
         );
+        $localized = [
+            'ajaxurl'   => admin_url( 'admin-ajax.php' ),
+            'root'  => esc_url_raw( rest_url( 'csm/v1' ) ),
+            '_wpnonce' => wp_create_nonce( 'wp_rest' ),
+        ];
+        wp_localize_script( 'csm', 'CSM_API', $localized );
     }
 }

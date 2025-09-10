@@ -2,9 +2,9 @@
 /**
  * Plugin Name: Cloud Server Management
  * Description: Cloud server management
- * Plugin URI: https://codexpert.io
+ * Plugin URI: https://techwithmahbub.com/
  * Author: WpPluginHub, Inc
- * Author URI: https://codexpert.io
+ * Author URI: https://techwithmahbub.com/
  * Version: 0.9
  * Text Domain: cloud-server-management
  * Domain Path: /languages
@@ -22,6 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'CSM_VERSION', '1.0.0' );
 define( 'CSM_PLUGIN_FILE', __FILE__ );
 define( 'CSM_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
+define( 'CSM_PLUGIN_NAME', 'cloud-server-management' );
 define( 'CSM_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CSM_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'CSM_ASSETS_URL', CSM_PLUGIN_URL . 'assets/' );
