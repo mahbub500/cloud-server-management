@@ -109,11 +109,11 @@ class API extends WP_REST_Controller{
         ], $this->namespace );
 
         // ✅ Single server route: /servers/{id}
-        $this->register_route( '/servers/(?P<id>\d+)', [
-            'methods'    => WP_REST_Server::ALLMETHODS, // GET + PUT/PATCH + DELETE
-            'callback'   => [$this, 'handle_server'],
-            'permission' => [$this, 'check_permission'],
-        ], $this->namespace );
+		$this->register_route( '/servers/(?P<ids>[0-9,]+)', [
+		    'methods'    => WP_REST_Server::ALLMETHODS,
+		    'callback'   => [$this, 'handle_server'],
+		    'permission' => [$this, 'check_permission'],
+		], $this->namespace );
 
     }
 
@@ -432,12 +432,28 @@ class API extends WP_REST_Controller{
      * @return \WP_REST_Response
      */
     public function delete_server( $request ) {
-        global $wpdb;
-        $id = (int) $request['id'];
+	    global $wpdb;
 
-        $deleted = $wpdb->delete($this->table, ['id' => $id]);
-        if (!$deleted) return $this->response_error('Failed to delete server or server not found.');
+	    $ids = $request->get_param('ids'); // Get "1,2,3"
+	    $ids_array = array_map( 'intval', explode(',', $ids ) );
 
-        return $this->response_success(['id' => $id]);
-    }
+	    $deleted_count = 0;
+
+	    foreach ( $ids_array as $id ) {
+	        $deleted = $wpdb->delete( $this->table, [ 'id' => $id ] );
+	        if ( $deleted ) {
+	            $deleted_count++;
+	        }
+	    }
+
+	    if ( $deleted_count === 0 ) {
+	        return $this->response_error( 'No servers were deleted. IDs not found?' );
+	    }
+
+	    return $this->response_success([
+	        'deleted_ids' => $ids_array,
+	        'deleted_count' => $deleted_count,
+	    ]);
+	}
+
 }
