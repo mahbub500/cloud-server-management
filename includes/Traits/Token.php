@@ -50,12 +50,17 @@ trait Token {
     }
 
     /**
-     * Validate token for a request.
+     * Validate the given authentication token.
      *
-     * @param string $token The token to validate.
-     * @return int|false User ID if valid, false otherwise.
+     * - Finds the user by token (stored in user meta).
+     * - Checks if the token has expired.
+     * - Applies rate limiting via check_rate_limit().
+     *
+     * @param string $token  The authentication token.
+     * @return int|WP_Error  Returns user ID if valid, or response_error() if invalid/expired/rate-limited.
      */
     public function validate_token( $token ) {
+        // Find user by token
         $users = get_users( [
             'meta_key'   => '_auth_token',
             'meta_value' => $token,
@@ -64,19 +69,52 @@ trait Token {
         ] );
 
         if ( empty( $users ) ) {
-            return $this->response_error( ['Token Invalid', 'Sign in again copy the token send it with `Authorization: Bearer $token` '] );
+            return $this->response_error([
+                'Token Invalid',
+                'Sign in again and send it with `Authorization: Bearer <token>`'
+            ]);
         }
 
         $user_id = $users[0];
-        $expiry  = get_user_meta( $user_id, '_auth_token_expiry', true );
 
-        // Check expiry
+        // 🔹 Check expiry
+        $expiry  = get_user_meta( $user_id, '_auth_token_expiry', true );
         if ( $expiry && time() > $expiry ) {
             delete_user_meta( $user_id, '_auth_token' );
             delete_user_meta( $user_id, '_auth_token_expiry' );
-            return false;
+            return $this->response_error( 'Token expired. Please log in again.' );
+        }
+
+        // 🔹 Call rate limit checker
+        $rate_check = $this->check_rate_limit( $user_id );
+        if ( $rate_check !== true ) {
+            return $rate_check; // already a response_error()
         }
 
         return $user_id;
+    }
+    /**
+     * Apply a simple rate limit for API requests.
+     *
+     * - Limits requests per user within a given time window.
+     * - Uses WordPress transients to track request counts.
+     *
+     * @param int $user_id  The user ID to check rate limit for.
+     * @return true|WP_Error  Returns true if allowed, or response_error() if limit exceeded.
+     */
+    public function check_rate_limit( $user_id ) {
+        $key    = 'rate_limit_' . $user_id;
+        $limit  = 10;   // max requests
+        $window = 60;   // seconds
+
+        $count = get_transient( $key ) ?: 0;
+        if ( $count >= $limit ) {
+            return $this->response_error(
+                'Rate limit exceeded. You can send max 10 requests per minute.'
+            );
+        }
+
+        set_transient( $key, $count + 1, $window );
+        return true;
     }
 }
