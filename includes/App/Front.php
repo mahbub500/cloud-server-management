@@ -32,7 +32,7 @@ class Front {
         wp_enqueue_script(
             'csm', 
             CSM_ASSETS_URL . 'js/index.js',
-            ['wp-element'], 
+            [ 'wp-element' ], 
             CSM_VERSION,
             true
         );

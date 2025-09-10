@@ -1,15 +1,20 @@
-/**
- * Cloud Server Management Modal Toggle
- * @param {boolean} show - true to show, false to hide
- */
-let csm_modal = (show = true) => {
-    const modal = document.getElementById('cloud-server-management-modal');
+// import { render, useState } from '@wordpress/element';
 
-    if (!modal) return; // Exit if modal not found
+// function App() {
+//     const [count, setCount] = useState(0);
 
-    if (show) {
-        modal.style.display = 'block';
-    } else {
-        modal.style.display = 'none';
-    }
-};
+//     return (
+//         <div style={{ padding: "20px", border: "1px solid #ddd" }}>
+//             <h2>Hello from React inside WordPress!</h2>
+//             <p>Count: {count}</p>
+//             <button onClick={() => setCount(count + 1)}>Increase</button>
+//         </div>
+//     );
+// }
+
+// document.addEventListener("DOMContentLoaded", () => {
+//     const root = document.getElementById("my-react-app");
+//     if (root) {
+//         render(<App />, root);
+//     }
+// });

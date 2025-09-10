@@ -1,0 +1,32 @@
+{
+  "devDependencies": {
+    "@wordpress/scripts": "^27.0.0"
+  },
+  "scripts": {
+    "build": "webpack",
+    "start": "wp-scripts start"
+  },
+  "name": "cloud-server-management",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "@babel/preset-react": "^7.27.1",
+    "babel-loader": "^10.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "webpack": "^5.101.3",
+    "webpack-cli": "^5.1.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mahbub500/cloud-server-managment.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mahbub500/cloud-server-managment/issues"
+  },
+  "homepage": "https://github.com/mahbub500/cloud-server-managment#readme"
+}
