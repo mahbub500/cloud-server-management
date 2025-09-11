@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
+import { API_BASE } from '../config.js';
+
 function SignUp() {
   // State for email and password
   const [email, setEmail] = useState("");

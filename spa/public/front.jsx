@@ -1,4 +1,4 @@
-import React, { useState } from "react"; 
+import React, { useState, useEffect } from "react"; 
 import ReactDOM from "react-dom/client";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
@@ -10,8 +10,32 @@ import SignIn from "./component/signin";
 import SignUp from "./component/signup";  
 
 function App() {
-  const [activeTab, setActiveTab] = useState("signin"); // ✅ useState works now
+  const [activeTab, setActiveTab] = useState("signin");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  // ✅ Check login status on mount
+  useEffect(() => {
+    const cookies = document.cookie.split(";").reduce((acc, cookie) => {
+      const [name, value] = cookie.trim().split("=");
+      acc[name] = value;
+      return acc;
+    }, {});
+
+    if (cookies.authToken && cookies.isLoggedIn === "true") {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  // ✅ Early return if logged in
+  if (isLoggedIn) {
+    return (
+      <div className="container mt-5">
+        <p className="mt-5">You are already logged in!</p>
+      </div>
+    );
+  }
+
+  // ✅ Normal render if not logged in
   return (
     <div className="container mt-5">
       <ButtonGroup aria-label="Basic example" className="mb-3">
