@@ -14,6 +14,33 @@ function ServerList() {
     document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT;';
   };
 
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this server?")) return;
+
+    try {
+      const cookies = document.cookie.split(";").reduce((acc, cookie) => {
+        const [name, value] = cookie.trim().split("=");
+        acc[name] = value;
+        return acc;
+      }, {});
+      const token = cookies.authToken;
+
+      const response = await fetch(`${API_BASE}/servers/${id}`, {
+        method: "DELETE",
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+
+      if (response.ok) {
+        setServers(prev => prev.filter(s => s.id !== id)); // remove from UI
+      } else {
+        console.error("Failed to delete server");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+
   const fetchServers = async () => {
     setLoading(true);
     setError("");
@@ -112,16 +139,42 @@ function ServerList() {
             <th>#</th>
             <th>Name</th>
             <th>Provider</th>
+            <th>Ip Adress</th>
+            <th>Cpu Core</th>
+            <th>Ram</th>
+            <th>Storage</th>
             <th>Status</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
           {servers?.data?.map((server, index) => (
-            <tr key={server.id || index}>
-              <td>{index + 1}</td>
+            <tr key={server.id}>
+              <td>{server.id}</td>
               <td>{server.name}</td>
               <td>{server.provider}</td>
+              <td>{server.ip_address}</td>
+              <td>{server.cpu_cores}</td>
+              <td>{server.ram_mb} MB</td>
+              <td>{server.storage_gb} GB</td>
               <td>{server.status}</td>
+              <td>
+                <Button 
+                  variant="warning" 
+                  size="sm" 
+                  className="me-2"
+                  onClick={() => handleEdit(server.id)}
+                >
+                  Edit
+                </Button>
+                <Button 
+                  variant="danger" 
+                  size="sm"
+                  onClick={() => handleDelete(server.id)}
+                >
+                  Delete
+                </Button>
+              </td>
             </tr>
           ))}
         </tbody>
