@@ -18,8 +18,8 @@ class Front {
     public function head(){
         $plugin_path = plugin_dir_path( __FILE__ );
 
-        Utility::pri( CSM_PLUGIN_URL );
-        Utility::pri( CSM_ASSETS_URL );
+        // Utility::pri( CSM_PLUGIN_URL );
+        // Utility::pri( CSM_ASSETS_URL );
     }
 
     public function enqueue_assets() {
