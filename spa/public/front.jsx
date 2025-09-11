@@ -1,15 +1,20 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 
-const Front = () => {
-	return (
-		<>
-			<h2>Hi, this is React </h2>
-		</>
-	);
-};
+import SignIn from "./component/signin";  
+import SignUp from "./component/signup";  
 
-export default Front;
+function App() {
+  return (
+    <div className="container mt-5">
+      <h1 className="text-primary">Hello React + Bootstrap</h1>
+      <SignIn />
+      <SignUp />
+    </div>
+  );
+}
 
-const root = ReactDOM.createRoot(document.getElementById("csm-app"));
-root.render(<Front/>);
+const root = ReactDOM.createRoot(document.getElementById("csm-root"));
+root.render(<App />);

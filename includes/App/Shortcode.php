@@ -15,6 +15,6 @@ class Shortcode {
     }
 
     public function csm_app(){
-         return '<div id="csm-app"></div>';
+         return '<div id="csm-root"></div>';
     }
 }

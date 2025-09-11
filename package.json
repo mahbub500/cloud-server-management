@@ -13,6 +13,7 @@
     "babel-loader": "^10.0.0",
     "bootstrap": "^5.3.8",
     "react": "^18.3.1",
+    "react-bootstrap": "^2.10.10",
     "react-dom": "^18.3.1",
     "webpack": "^5.101.3",
     "webpack-cli": "^5.1.4"
@@ -30,6 +31,8 @@
   "homepage": "https://github.com/mahbub500/cloud-server-managment#readme",
   "devDependencies": {
     "@babel/preset-env": "^7.28.3",
-    "@wordpress/scripts": "^30.23.0"
+    "@wordpress/scripts": "^30.23.0",
+    "css-loader": "^7.1.2",
+    "style-loader": "^4.0.0"
   }
 }
