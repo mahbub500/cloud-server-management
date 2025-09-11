@@ -1,7 +1,4 @@
 {
-  "devDependencies": {
-    "@wordpress/scripts": "^27.0.0"
-  },
   "scripts": {
     "build": "webpack",
     "start": "wp-scripts start"

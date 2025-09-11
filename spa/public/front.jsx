@@ -12,4 +12,4 @@ const Front = () => {
 export default Front;
 
 const root = ReactDOM.createRoot(document.getElementById("csm-app"));
-root.render(<Front />);
+root.render(<Front/>);

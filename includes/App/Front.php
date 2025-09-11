@@ -18,7 +18,8 @@ class Front {
     public function head(){
         $plugin_path = plugin_dir_path( __FILE__ );
 
-        // Utility::pri( CSM_PLUGIN_NAME );
+        Utility::pri( CSM_PLUGIN_URL );
+        Utility::pri( CSM_ASSETS_URL );
     }
 
     public function enqueue_assets() {
@@ -32,6 +33,14 @@ class Front {
         wp_enqueue_script(
             'csm', 
             CSM_ASSETS_URL . 'js/index.js',
+            [ 'wp-element' ], 
+            CSM_VERSION,
+            true
+        );
+
+        wp_enqueue_script(
+            'csm-react', 
+            CSM_PLUGIN_URL . 'build/main.js',
             [ 'wp-element' ], 
             CSM_VERSION,
             true
