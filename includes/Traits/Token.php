@@ -18,7 +18,7 @@ trait Token {
 
         // Save token in user meta with an expiration (optional: 1 day)
         update_user_meta( $user_id, '_auth_token', $token );
-        update_user_meta( $user_id, '_auth_token_expiry', time() + DAY_IN_SECONDS );
+        update_user_meta( $user_id, '_auth_token_expiry', time() + HOUR_IN_SECONDS );
 
         return $token;
     }
@@ -44,8 +44,8 @@ trait Token {
 
         if ( empty( $users ) ) {
             return $this->response_error([
-                'Token Invalid',
-                'Sign in again and send it with `Authorization: Bearer <token>`'
+                'Token Invalid Sign in again and send it with `Authorization: Bearer <token>'
+                
             ]);
         }
 

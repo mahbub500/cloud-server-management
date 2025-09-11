@@ -3,23 +3,12 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { API_BASE } from '../config.js';
 
-function SignIn() {
+import Server from "./server/server";  
+
+function SignIn({ setIsLoggedIn }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  // Check if user is already logged in
-  useEffect(() => {
-    const cookies = document.cookie.split(";").reduce((acc, cookie) => {
-      const [name, value] = cookie.trim().split("=");
-      acc[name] = value;
-      return acc;
-    }, {});
-    if (cookies.authToken && cookies.isLoggedIn === "true") {
-      setIsLoggedIn(true);
-    }
-  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,10 +27,10 @@ function SignIn() {
         document.cookie = `authToken=${data.data.token}; path=/; max-age=${7*24*60*60}`;
         document.cookie = `isLoggedIn=true; path=/; max-age=${7*24*60*60}`;
 
-        setIsLoggedIn(true);
+        setIsLoggedIn(true); // ✅ Show <Server /> component
         setMessage(`Login successful! Welcome ${data.data.username}`);
       } else {
-        setMessage(data.data?.message || "Login failed");
+        setMessage(data.data || "Login failed");
       }
     } catch (error) {
       console.error(error);
@@ -49,41 +38,18 @@ function SignIn() {
     }
   };
 
-  // Hide the component if user is already logged in
-  if (isLoggedIn) {
-    return <p>You are already logged in.</p>;
-  }
-
   return (
     <Form onSubmit={handleSubmit}>
       <h1>Sign In</h1>
-
-      <Form.Group className="mb-3" controlId="formBasicEmail">
+      <Form.Group className="mb-3">
         <Form.Label>Email address</Form.Label>
-        <Form.Control
-          type="email"
-          placeholder="Enter email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+        <Form.Control type="email" placeholder="Enter email" value={email} onChange={e => setEmail(e.target.value)} required />
       </Form.Group>
-
-      <Form.Group className="mb-3" controlId="formBasicPassword">
+      <Form.Group className="mb-3">
         <Form.Label>Password</Form.Label>
-        <Form.Control
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+        <Form.Control type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required />
       </Form.Group>
-
-      <Button variant="primary" type="submit">
-        Sign In
-      </Button>
-
+      <Button variant="primary" type="submit">Sign In</Button>
       {message && <p className="mt-3">{message}</p>}
     </Form>
   );
