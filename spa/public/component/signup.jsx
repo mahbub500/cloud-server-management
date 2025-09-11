@@ -13,7 +13,7 @@ function SignUp() {
     e.preventDefault(); // prevent default page reload
 
     try {
-      const response = await fetch("http://test.local/wp-json/csm/v1/signup", {
+      const response = await fetch(`${API_BASE}/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
