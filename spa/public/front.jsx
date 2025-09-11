@@ -4,7 +4,7 @@ import ReactDOM from "react-dom/client";
 const Front = () => {
 	return (
 		<>
-			<h2>Hi, this is React</h2>
+			<h2>Hi, this is React </h2>
 		</>
 	);
 };

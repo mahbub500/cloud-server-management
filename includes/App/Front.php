@@ -62,7 +62,7 @@ class Front {
             'csm-react', 
             CSM_PLUGIN_URL . 'build/main.js',
             [ 'wp-element' ], 
-            CSM_VERSION,
+            time(),
             true
         );
         $localized = [

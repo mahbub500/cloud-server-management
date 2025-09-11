@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "webpack",
+    "build": "wp-scripts build",
     "start": "wp-scripts start"
   },
   "name": "cloud-server-management",
@@ -9,7 +9,9 @@
   "main": "index.js",
   "dependencies": {
     "@babel/preset-react": "^7.27.1",
+    "@popperjs/core": "^2.11.8",
     "babel-loader": "^10.0.0",
+    "bootstrap": "^5.3.8",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "webpack": "^5.101.3",
@@ -25,5 +27,9 @@
   "bugs": {
     "url": "https://github.com/mahbub500/cloud-server-managment/issues"
   },
-  "homepage": "https://github.com/mahbub500/cloud-server-managment#readme"
+  "homepage": "https://github.com/mahbub500/cloud-server-managment#readme",
+  "devDependencies": {
+    "@babel/preset-env": "^7.28.3",
+    "@wordpress/scripts": "^30.23.0"
+  }
 }
