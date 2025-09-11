@@ -8,6 +8,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 
 import SignIn from "./component/signin";  
 import SignUp from "./component/signup";  
+import ServerList from "./component/server/serverlist";  
 
 function App() {
   const [activeTab, setActiveTab] = useState("signin");
@@ -30,7 +31,7 @@ function App() {
   if (isLoggedIn) {
     return (
       <div className="container mt-5">
-        <p className="mt-5">You are already logged in!</p>
+        <ServerList />
       </div>
     );
   }
