@@ -24,9 +24,17 @@ function SignUp() {
       const data = await response.json();
 
       if (response.ok) {
-        setMessage("Signup successful!");
+
+        // console.log( data );
+        setMessage(
+          <>
+            Hi: {data.data.username} <br />
+            Email: {data.data.email} <br />
+            User Id: {data.data.user_id}
+          </>
+        );
       } else {
-        setMessage(data.message || "Signup failed");
+        setMessage(data['data'] || "Signup failed");
       }
     } catch (error) {
       console.error("Error:", error);
