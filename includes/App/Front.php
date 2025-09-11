@@ -23,6 +23,7 @@ class Front {
     }
 
     public function enqueue_assets() {
+        // Plugin/Theme Styles
         wp_enqueue_style(
             'csm',
             CSM_ASSETS_URL . 'css/index.css',
@@ -30,6 +31,15 @@ class Front {
             CSM_VERSION
         );
 
+        // Bootstrap CSS
+        wp_enqueue_style(
+            'csm-bootstrap-css',
+            'https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css',
+            [],
+            '4.6.2'
+        );
+
+        // Your main script (React/JS)
         wp_enqueue_script(
             'csm', 
             CSM_ASSETS_URL . 'js/index.js',
@@ -37,6 +47,16 @@ class Front {
             CSM_VERSION,
             true
         );
+
+        // Bootstrap JS (with Popper, requires jQuery)
+        wp_enqueue_script(
+            'csm-bootstrap-js',
+            'https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js',
+            [ 'jquery' ], 
+            '4.6.2',
+            true
+        );
+
 
         wp_enqueue_script(
             'csm-react', 
