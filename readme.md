@@ -1,7 +1,7 @@
 # 🌥️ Cloud Server Management – WordPress Plugin
 
-**Track chosen:** C Full Stuck
-**Time spent:** 20 hours.
+### **Track chosen:** C Full Stuck
+### **Time spent:** 20 hours.
 
 ## 🐛 Debugging Challenges :
 ### 🛡️ Validation Edge Case: Duplicate IPs
