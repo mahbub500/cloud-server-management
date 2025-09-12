@@ -101,6 +101,21 @@ GET {siteurl}/wp-json/csm/v1/servers
 Authorization: Bearer your_generated_token
 ```
 
+**Optional Query Parameters:**
+
+| Parameter | Type   | Example             | Description                                                                 |
+|-----------|--------|---------------------|-----------------------------------------------------------------------------|
+| `page`    | int    | `2`                 | Page number (default: 1)                                                    |
+| `per_page`| int    | `20`                | Number of results per page (default: 10, max: 100)                          |
+| `provider`| string | `aws`               | Filter by provider (`aws`, `digitalocean`, `vultr`, `other`)                |
+| `status`  | string | `active`            | Filter by server status (`active`, `inactive`, `maintenance`)               |
+| `search`  | string | `192.168` or `srv`  | Search in `name` or `ip_address` (partial match supported, case-insensitive) |
+
+**Example Request:**
+```
+GET {siteurl}/wp-json/csm/v1/servers?page=2&per_page=5&provider=aws&status=active&search=192
+```
+
 **Response Example:**
 ```json
 [
@@ -114,6 +129,17 @@ Authorization: Bearer your_generated_token
     "ram_mb": "8192",
     "storage_gb": "100",
     "created_at": "2025-09-12 08:44:13"
+  },
+  {
+    "id": "2",
+    "name": "srv-test",
+    "ip_address": "192.168.0.11",
+    "provider": "aws",
+    "status": "active",
+    "cpu_cores": "8",
+    "ram_mb": "16384",
+    "storage_gb": "200",
+    "created_at": "2025-09-12 09:10:25"
   }
 ]
 ```
