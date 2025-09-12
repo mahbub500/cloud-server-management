@@ -6,7 +6,7 @@ import ServerList from "./serverlist";
 import CreateServer from "./createserver"; 
 
 function Server() {
-  const [activeTab, setActiveTab] = useState("serverlist");
+  const [activeTab, setActiveTab] = useState("createserver");
 
   // Helper functions
   const setCookie = (name, value, days) => {
