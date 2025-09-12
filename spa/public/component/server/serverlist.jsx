@@ -145,6 +145,7 @@ function ServerList() {
   return (
     <div>
       <div className="mb-3 d-flex ">
+        <h1>Server List</h1>
         <Button variant="primary " className="gap-2" onClick={handleRefresh}>
           Refresh
         </Button>

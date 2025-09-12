@@ -87,7 +87,7 @@ function CreateServer() {
       const data = await response.json();
 
       if (data.success === false) {
-        console.log( data.data );
+        // console.log( data.data );
         // Token expired
         if (data.data[0].toLowerCase().includes("token")) {
           deleteCookie('authToken');
@@ -104,10 +104,10 @@ function CreateServer() {
       // Success
       setErrors({});
       alert(data.data[0] || "Server created successfully!");
-      console.log("Response:", data);
+      // console.log("Response:", data);
 
     } catch (err) {
-      console.log("Error:", err);
+      // console.log("Error:", err);
       setErrors({ form: "Error creating server. Please try again." });
     } finally {
       setLoading(false);
@@ -120,6 +120,7 @@ function CreateServer() {
       {errors.form && <div className="text-danger mb-2">{errors.form}</div>}
 
       <Row className="g-2">
+        <h1>Create Server</h1>
         <Col md>
           <FloatingLabel controlId="name" label="Server Name">
             <Form.Control

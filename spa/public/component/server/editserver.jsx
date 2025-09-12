@@ -164,6 +164,7 @@ function EditServer() {
       {errors.form && <div className="text-danger mb-2">{errors.form}</div>}
 
       <Row className="g-2">
+        <h1>Edit Server</h1>
         <Col md>
           <FloatingLabel controlId="name" label="Server Name">
             <Form.Control
