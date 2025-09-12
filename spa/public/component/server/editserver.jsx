@@ -145,7 +145,7 @@ function EditServer() {
         return;
       }
 
-      alert(data.data[0] || "Server updated successfully!");
+      // alert(data.data[0] || "Server updated successfully!");
       navigate("/servers"); // redirect back to server list
     } catch (err) {
       console.error(err);

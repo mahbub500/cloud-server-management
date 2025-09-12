@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
+import Form from 'react-bootstrap/Form';
 import { API_BASE } from '../../config.js';
 import { useNavigate } from "react-router-dom";
 
@@ -12,15 +13,16 @@ function ServerList() {
   const [selected, setSelected] = useState([]);
   const [deleting, setDeleting] = useState(false);
 
-  const navigate = useNavigate();
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
+  const [providerFilter, setProviderFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [search, setSearch] = useState("");
 
+  const navigate = useNavigate();
 
   const deleteCookie = (name) => {
     document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT;';
-  };
-
-  const handleEdit = (id) => {
-    alert(`Edit server ${id}`);
   };
 
   const toggleSelect = (id) => {
@@ -30,11 +32,8 @@ function ServerList() {
   };
 
   const toggleSelectAll = () => {
-    if (selected.length === servers.length) {
-      setSelected([]);
-    } else {
-      setSelected(servers.map(s => s.id));
-    }
+    if (selected.length === servers.length) setSelected([]);
+    else setSelected(servers.map(s => s.id));
   };
 
   const handleDelete = async (id) => {
@@ -71,7 +70,7 @@ function ServerList() {
       );
       const token = cookies.authToken;
 
-      const idsParam = selected.join(","); // -> "1,2,3"
+      const idsParam = selected.join(",");
       const response = await fetch(`${API_BASE}/servers/${idsParam}`, {
         method: "DELETE",
         headers: { "Authorization": `Bearer ${token}` }
@@ -104,11 +103,21 @@ function ServerList() {
         return;
       }
 
-      const response = await fetch(`${API_BASE}/servers`, {
+      const params = new URLSearchParams({
+        page,
+        per_page: perPage,
+        provider: providerFilter,
+        status: statusFilter ,
+        search: search
+      });
+
+      const response = await fetch(`${API_BASE}/servers?${params.toString()}`, {
         headers: { "Authorization": `Bearer ${token}` }
       });
 
       const data = await response.json();
+
+      console.log( data );
 
       if (response.ok) {
         setServers(data.data || []);
@@ -127,13 +136,9 @@ function ServerList() {
     }
   };
 
-  const handleRefresh = () => {
-    fetchServers();
-  };
-
   useEffect(() => {
     fetchServers();
-  }, []);
+  }, [page, perPage, providerFilter, statusFilter, search]);
 
   if (loading) return (
     <div className="text-center mt-5">
@@ -144,20 +149,42 @@ function ServerList() {
 
   return (
     <div>
-      <div className="mb-3 d-flex ">
-        <h1>Server List</h1>
-        <Button variant="primary " className="gap-2" onClick={handleRefresh}>
-          Refresh
-        </Button>
-        <Button 
-          variant="danger" 
-          disabled={selected.length === 0 || deleting} 
-          onClick={handleBulkDelete}
-        >
-          {deleting ? "Deleting..." : `Delete All (${selected.length})`}
-        </Button>
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h3>Server List</h3>
+        <div className="d-flex gap-2">
+          <Button variant="primary" onClick={fetchServers}>Refresh</Button>
+          <Button 
+            variant="danger" 
+            disabled={selected.length === 0 || deleting} 
+            onClick={handleBulkDelete}
+          >
+            {deleting ? "Deleting..." : `Delete Selected (${selected.length})`}
+          </Button>
+        </div>
       </div>
 
+      {/* Filters & Search */}
+      <div className="d-flex gap-2 mb-3">
+        <Form.Select value={providerFilter} onChange={e => setProviderFilter(e.target.value)}>
+          <option value="">All Providers</option>
+          <option value="aws">AWS</option>
+          <option value="digitalocean">DigitalOcean</option>
+          <option value="vultr">Vultr</option>
+        </Form.Select>
+        <Form.Select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
+          <option value="">All Status</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+          <option value="maintenance">Maintenance</option>
+        </Form.Select>
+        <Form.Control 
+          placeholder="Search by name or IP"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
+      </div>
+
+      {/* Server Table */}
       <Table striped bordered hover size="sm">
         <thead>
           <tr>
@@ -218,6 +245,19 @@ function ServerList() {
           ))}
         </tbody>
       </Table>
+
+      {/* Pagination */}
+      <div className="d-flex gap-2 align-items-center mt-3">
+        <Button disabled={page <= 1} onClick={() => setPage(prev => prev - 1)}>Previous</Button>
+        <span>Page {page}</span>
+        <Button onClick={() => setPage(prev => prev + 1)}>Next</Button>
+        <Form.Select value={perPage} onChange={e => setPerPage(parseInt(e.target.value))} style={{width: "100px"}}>
+          <option value={5}>5</option>
+          <option value={10}>10</option>
+          <option value={25}>25</option>
+          <option value={50}>50</option>
+        </Form.Select>
+      </div>
     </div>
   );
 }
