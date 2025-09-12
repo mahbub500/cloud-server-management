@@ -156,7 +156,7 @@ function ServerList() {
         <tbody>
           {servers?.data?.map((server, index) => (
             <tr key={server.id}>
-              <td>{server.id}</td>
+              <td>{index + 1}</td>
               <td>{server.name}</td>
               <td>{server.provider}</td>
               <td>{server.ip_address}</td>
