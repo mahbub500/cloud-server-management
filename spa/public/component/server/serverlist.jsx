@@ -160,6 +160,14 @@ function ServerList() {
           >
             {deleting ? "Deleting..." : `Delete Selected (${selected.length})`}
           </Button>
+          <Button variant="secondary" onClick={() => {
+            setProviderFilter("");
+            setStatusFilter("");
+            setSearch("");
+            setPage(1); // reset to first page
+          }}>
+            Clear Filters
+          </Button>
         </div>
       </div>
 
@@ -182,6 +190,8 @@ function ServerList() {
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
+
+
       </div>
 
       {/* Server Table */}
