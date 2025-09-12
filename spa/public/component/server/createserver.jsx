@@ -21,13 +21,18 @@ function CreateServer() {
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [showSignIn, setShowSignIn] = useState(false); // show SignIn if token expired
+ 
 
   // Handle input changes
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
     setErrors((prev) => ({ ...prev, [id]: "", form: "" }));
+  };
+
+  // Function to delete cookie
+  const deleteCookie = (name) => {
+    document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT;';
   };
 
   // Validation
@@ -84,11 +89,11 @@ function CreateServer() {
       if (data.success === false) {
         console.log( data.data );
         // Token expired
-        if (data.data.toLowerCase().includes("token")) {
-          document.cookie = "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-          setErrors({ form: "Session expired. Please log in again." });
-          setShowSignIn(true); // Show SignIn component
-          return;
+        if (data.data[0].toLowerCase().includes("token")) {
+          deleteCookie('authToken');
+          deleteCookie('isLoggedIn');
+          window.location.reload();
+          
         }
 
         // Other API errors
@@ -109,8 +114,6 @@ function CreateServer() {
     }
   };
 
-  // Show SignIn if token expired
-  if (showSignIn) return <SignIn />;
 
   return (
     <Form onSubmit={handleSubmit}>
