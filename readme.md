@@ -94,6 +94,7 @@ Authorization: Bearer your_generated_token
 ---
 
 ### 4️⃣ List Servers
+![Server List](assets/img/server-list.png)
 **Endpoint:**
 ```
 GET {siteurl}/wp-json/csm/v1/servers
