@@ -79,8 +79,9 @@ function CreateServer() {
       const data = await response.json();
 
       if (data.success === false) {
+        console.log(data.data );
       // Only delete cookie if token expired
-      if (data.message?.toLowerCase().includes("token") || data.code === "TOKEN_EXPIRED") {
+      if (data.dat?.toLowerCase().includes("token") ) {
         document.cookie = "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         setErrors((prev) => ({
           ...prev,
@@ -92,7 +93,7 @@ function CreateServer() {
       // Other API errors — just show message
       setErrors((prev) => ({
         ...prev,
-        form: data.data?.[0] || "Something went wrong!",
+        form: data.data || "Something went wrong!",
       }));
       return;
     }
