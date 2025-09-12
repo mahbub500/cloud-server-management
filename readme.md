@@ -1,7 +1,23 @@
 # 🌥️ Cloud Server Management – WordPress Plugin
 
 **Track chosen:** C Full Stuck
-**Time spent:** 20 hours
+**Time spent:** 20 hours.
+
+## 🐛 Debugging Challenges :
+### 🛡️ Validation Edge Case: Duplicate IPs
+Added a unique constraint on the ip_address column in the database table:
+ ```
+ ALTER TABLE wp_servers ADD UNIQUE (ip_address);
+```
+Now, any attempt to insert a duplicate IP will fail at the database level.
+
+The plugin catches this error and returns a friendly message to the user:
+```
+{
+  "success": false,
+  "message": "IP address already exists."
+}
+```
 
 A WordPress plugin to manage cloud servers (AWS, DigitalOcean, Vultr, and more) via REST API.  
 Easily create, list, edit, and delete servers using authentication tokens.  

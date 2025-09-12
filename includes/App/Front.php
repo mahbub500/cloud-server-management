@@ -16,9 +16,8 @@ class Front {
     }
 
     public function head(){
-        $plugin_path = plugin_dir_path( __FILE__ );
 
-        csm_insert();
+        // csm_insert();
 
         // Utility::pri( CSM_PLUGIN_URL );
         // Utility::pri( CSM_ASSETS_URL );
