@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import { API_BASE } from '../../config.js';
 
+
 function ServerList() {
   const [servers, setServers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -85,8 +86,9 @@ function ServerList() {
           setError(data.data || "Failed to fetch servers");
           deleteCookie('authToken');
           deleteCookie('isLoggedIn');
+          window.location.reload();
         }
-        // window.location.reload();
+        
       }
     } catch (err) {
       // console.log( err.status );
@@ -114,7 +116,6 @@ function ServerList() {
       </Spinner>
     </div>
   );
-
   if (error) return <p className="text-danger">{error}</p>;
 
   return (
