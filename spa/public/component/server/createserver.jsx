@@ -7,7 +7,6 @@ import Button from "react-bootstrap/Button";
 
 import { API_BASE } from '../../config.js';
 
-
 function CreateServer() {
   const [formData, setFormData] = useState({
     name: "",
@@ -22,16 +21,15 @@ function CreateServer() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
-  // Handle input change
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
+    setErrors((prev) => ({ ...prev, [id]: "" })); // clear field-specific error on change
+    setErrors((prev) => ({ ...prev, form: "" })); // clear global error
   };
 
-  // Validation function
   const validate = () => {
     const newErrors = {};
-
     if (!formData.name) newErrors.name = "Server name is required";
 
     const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
@@ -55,39 +53,48 @@ function CreateServer() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validate()) return;
 
     const cookies = document.cookie.split(";").reduce((acc, cookie) => {
-        const [name, value] = cookie.trim().split("=");
-        acc[name] = value;
-        return acc;
-      }, {});
-
+      const [name, value] = cookie.trim().split("=");
+      acc[name] = value;
+      return acc;
+    }, {});
     const token = cookies.authToken;
-console.log( formData );
-// return;
+
     setLoading(true);
     try {
       const response = await fetch(`${API_BASE}/servers`, {
         method: "POST",
-        headers: { 
-          "Content-Type": "application/json", 
-          "Authorization": `Bearer ${token}` },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
         body: JSON.stringify(formData),
       });
 
-      if (!response.ok) throw new Error("Failed to create server");
-
       const data = await response.json();
-      alert("Server created successfully!");
+
+      if (data.success === false) {
+        // Map API error message to global form error
+        setErrors((prev) => ({
+          ...prev,
+          form: data.data?.[0] || "Something went wrong!",
+        }));
+        return;
+      }
+
+      // Success
+      setErrors({});
+      alert(data.data[0] || "Server created successfully!");
       console.log("Response:", data);
+
     } catch (err) {
-      console.error(err);
-      alert("Error creating server");
+      console.log("Error:", err);
+      setErrors({ form: "Error creating server. Please try again." });
     } finally {
       setLoading(false);
     }
@@ -95,6 +102,10 @@ console.log( formData );
 
   return (
     <Form onSubmit={handleSubmit}>
+      {errors.form && (
+        <div className="text-danger mb-2">{errors.form}</div>
+      )}
+
       <Row className="g-2">
         <Col md>
           <FloatingLabel controlId="name" label="Server Name">
