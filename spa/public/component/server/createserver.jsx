@@ -5,6 +5,7 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
 
+import SignIn from "../../component/signin";
 import { API_BASE } from '../../config.js';
 
 function CreateServer() {
@@ -20,14 +21,16 @@ function CreateServer() {
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [showSignIn, setShowSignIn] = useState(false); // show SignIn if token expired
 
+  // Handle input changes
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
-    setErrors((prev) => ({ ...prev, [id]: "" })); // clear field-specific error on change
-    setErrors((prev) => ({ ...prev, form: "" })); // clear global error
+    setErrors((prev) => ({ ...prev, [id]: "", form: "" }));
   };
 
+  // Validation
   const validate = () => {
     const newErrors = {};
     if (!formData.name) newErrors.name = "Server name is required";
@@ -53,9 +56,9 @@ function CreateServer() {
     return Object.keys(newErrors).length === 0;
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!validate()) return;
 
     const cookies = document.cookie.split(";").reduce((acc, cookie) => {
@@ -79,25 +82,19 @@ function CreateServer() {
       const data = await response.json();
 
       if (data.success === false) {
-        console.log(data.data );
-      // Only delete cookie if token expired
-      if (data.dat?.toLowerCase().includes("token") ) {
-        document.cookie = "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        setErrors((prev) => ({
-          ...prev,
-          form: "Session expired. Please log in again.",
-        }));
+        console.log( data.data );
+        // Token expired
+        if (data.data.toLowerCase().includes("token")) {
+          document.cookie = "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+          setErrors({ form: "Session expired. Please log in again." });
+          setShowSignIn(true); // Show SignIn component
+          return;
+        }
+
+        // Other API errors
+        setErrors({ form: data.data || "Something went wrong!" });
         return;
       }
-
-      // Other API errors — just show message
-      setErrors((prev) => ({
-        ...prev,
-        form: data.data || "Something went wrong!",
-      }));
-      return;
-    }
-
 
       // Success
       setErrors({});
@@ -112,11 +109,12 @@ function CreateServer() {
     }
   };
 
+  // Show SignIn if token expired
+  if (showSignIn) return <SignIn />;
+
   return (
     <Form onSubmit={handleSubmit}>
-      {errors.form && (
-        <div className="text-danger mb-2">{errors.form}</div>
-      )}
+      {errors.form && <div className="text-danger mb-2">{errors.form}</div>}
 
       <Row className="g-2">
         <Col md>
