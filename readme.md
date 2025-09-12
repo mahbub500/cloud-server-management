@@ -1,5 +1,8 @@
 # 🌥️ Cloud Server Management – WordPress Plugin
 
+**Track chosen:** C Full Stuck
+**Time spent:** 20 hours
+
 A WordPress plugin to manage cloud servers (AWS, DigitalOcean, Vultr, and more) via REST API.  
 Easily create, list, edit, and delete servers using authentication tokens.  
 
@@ -196,3 +199,26 @@ Authorization: Bearer your_generated_token
   "message": "Selected server(s) deleted successfully."
 }
 ```
+---
+
+
+## 🤖 AI Collaboration Process
+- Describe how AI tools (ChatGPT) assisted in:
+  - Structuring endpoints
+  - Writing validation logic
+  - Generating API documentation
+
+## 🐞 Debugging Journey
+- Document challenges faced:
+  - Multi-delete endpoint handling
+  - Token authentication errors
+  - Pagination and filtering issues
+- How they were resolved step-by-step
+
+## ⚙️ Tech Decisions & Trade-offs
+- Chose **WordPress REST API** for plugin extensibility.
+- Used **Composer autoloading** for structured code.
+- Decision to allow **multi-delete via comma-separated IDs** for simplicity.
+- Trade-offs:
+  - Limited to token-based authentication with 1-hour expiry.
+  - And user can get response 10 times in one minute.
