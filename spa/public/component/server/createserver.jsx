@@ -79,14 +79,24 @@ function CreateServer() {
       const data = await response.json();
 
       if (data.success === false) {
-         document.cookie = "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        // Map API error message to global form error
+      // Only delete cookie if token expired
+      if (data.message?.toLowerCase().includes("token") || data.code === "TOKEN_EXPIRED") {
+        document.cookie = "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         setErrors((prev) => ({
           ...prev,
-          form: data.data?.[0] || "Something went wrong!",
+          form: "Session expired. Please log in again.",
         }));
         return;
       }
+
+      // Other API errors — just show message
+      setErrors((prev) => ({
+        ...prev,
+        form: data.data?.[0] || "Something went wrong!",
+      }));
+      return;
+    }
+
 
       // Success
       setErrors({});
