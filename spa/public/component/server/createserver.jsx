@@ -11,9 +11,9 @@ import { API_BASE } from '../../config.js';
 function CreateServer() {
   const [formData, setFormData] = useState({
     name: "",
-    serverProvider: "aws",
+    provider: "aws",
     status: "active",
-    ipaddress: "",
+    ip_address: "",
     cpu_cores: "",
     ram_mb: "",
     storage_gb: "",
@@ -35,8 +35,8 @@ function CreateServer() {
     if (!formData.name) newErrors.name = "Server name is required";
 
     const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
-    if (!ipRegex.test(formData.ipaddress)) {
-      newErrors.ipaddress = "Enter a valid IP address (e.g., 192.168.0.1)";
+    if (!ipRegex.test(formData.ip_address)) {
+      newErrors.ip_address = "Enter a valid IP address (e.g., 192.168.0.1)";
     }
 
     if (formData.cpu_cores < 1 || formData.cpu_cores > 128) {
@@ -68,7 +68,8 @@ function CreateServer() {
       }, {});
 
     const token = cookies.authToken;
-
+console.log( formData );
+// return;
     setLoading(true);
     try {
       const response = await fetch(`${API_BASE}/servers`, {
@@ -110,9 +111,9 @@ function CreateServer() {
           </FloatingLabel>
         </Col>
         <Col md>
-          <FloatingLabel controlId="serverProvider" label="Select Provider">
+          <FloatingLabel controlId="provider" label="Select Provider">
             <Form.Select
-              value={formData.serverProvider}
+              value={formData.provider}
               onChange={handleChange}
             >
               <option value="aws">AWS</option>
@@ -135,16 +136,16 @@ function CreateServer() {
 
       <Row className="g-2 mt-2">
         <Col md>
-          <FloatingLabel controlId="ipaddress" label="IP Address">
+          <FloatingLabel controlId="ip_address" label="IP Address">
             <Form.Control
               type="text"
               placeholder="192.168.0.1"
-              value={formData.ipaddress}
+              value={formData.ip_address}
               onChange={handleChange}
-              isInvalid={!!errors.ipaddress}
+              isInvalid={!!errors.ip_address}
             />
             <Form.Control.Feedback type="invalid">
-              {errors.ipaddress}
+              {errors.ip_address}
             </Form.Control.Feedback>
           </FloatingLabel>
         </Col>
