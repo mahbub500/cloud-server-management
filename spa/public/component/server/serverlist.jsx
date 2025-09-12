@@ -141,7 +141,7 @@ function ServerList() {
   return (
     <div>
       <div className="mb-3 d-flex ">
-        <Button variant="primary mt-1" onClick={handleRefresh}>
+        <Button variant="primary " className="gap-2" onClick={handleRefresh}>
           Refresh
         </Button>
         <Button 
@@ -149,7 +149,7 @@ function ServerList() {
           disabled={selected.length === 0 || deleting} 
           onClick={handleBulkDelete}
         >
-          {deleting ? "Deleting..." : `Delete Selected (${selected.length})`}
+          {deleting ? "Deleting..." : `Delete All (${selected.length})`}
         </Button>
       </div>
 
