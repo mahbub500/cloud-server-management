@@ -80,12 +80,17 @@ function ServerList() {
         setServers(data);
         localStorage.setItem("servers", JSON.stringify(data)); // cache
       } else if (data.success === false) {
-        setError(data.data || "Failed to fetch servers");
-        deleteCookie('authToken');
-        deleteCookie('isLoggedIn');
+       
+        if (data.data[0].toLowerCase().includes("token")) {
+          setError(data.data || "Failed to fetch servers");
+          deleteCookie('authToken');
+          deleteCookie('isLoggedIn');
+        }
         // window.location.reload();
       }
     } catch (err) {
+      // console.log( err.status );
+      // console.log( err.data );
       setError("Something went wrong");
       console.error(err);
     } finally {
