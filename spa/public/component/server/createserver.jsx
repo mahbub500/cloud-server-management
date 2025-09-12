@@ -79,6 +79,7 @@ function CreateServer() {
       const data = await response.json();
 
       if (data.success === false) {
+         document.cookie = "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         // Map API error message to global form error
         setErrors((prev) => ({
           ...prev,
