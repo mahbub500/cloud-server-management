@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Col from "react-bootstrap/Col";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
-import { useNavigate } from "react-router-dom"; // for navigation
 import { API_BASE } from "../../config.js";
 
-function EditServer({ id }) {
+function EditServer() {
+  const { id } = useParams(); // Get ID from URL
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: "",
     provider: "aws",
@@ -21,7 +24,6 @@ function EditServer({ id }) {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
-  const navigate = useNavigate();
 
   // Function to delete cookie
   const deleteCookie = (name) => {
@@ -64,48 +66,49 @@ function EditServer({ id }) {
 
   // Fetch server by ID
   useEffect(() => {
-    const fetchServer = async () => {
-      try {
-        const cookies = document.cookie.split(";").reduce((acc, cookie) => {
-          const [name, value] = cookie.trim().split("=");
-          acc[name] = value;
-          return acc;
-        }, {});
-        const token = cookies.authToken;
+  const fetchServer = async () => {
+    try {
+      const cookies = document.cookie.split(";").reduce((acc, cookie) => {
+        const [name, value] = cookie.trim().split("=");
+        acc[name] = value;
+        return acc;
+      }, {});
+      const token = cookies.authToken;
 
-        if (!token) {
-          setErrors({ form: "User not authenticated" });
-          return;
-        }
-
-        const response = await fetch(`${API_BASE}/servers/${id}`, {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-          },
-        });
-
-        const data = await response.json();
-
-        if (data.success === false) {
-          if (data.data[0].toLowerCase().includes("token")) {
-            deleteCookie("authToken");
-            deleteCookie("isLoggedIn");
-            window.location.reload();
-          }
-          setErrors({ form: data.data || "Failed to fetch server" });
-        } else {
-          setFormData(data.data[0]); // assuming your API returns single server in data[0]
-        }
-      } catch (err) {
-        console.error(err);
-        setErrors({ form: "Error fetching server" });
-      } finally {
-        setFetching(false);
+      if (!token) {
+        setErrors({ form: "User not authenticated" });
+        return;
       }
-    };
 
-    fetchServer();
-  }, [id]);
+      const response = await fetch(`${API_BASE}/servers/${id}`, {
+        method: "GET",
+        headers: { "Authorization": `Bearer ${token}` },
+      });
+
+      const data = await response.json();
+
+      // console.log(data);
+
+      if (data.success === false) {
+        if (data?.data?.[0]?.toLowerCase()?.includes("token")) {
+          deleteCookie("authToken");
+          deleteCookie("isLoggedIn");
+          window.location.reload();
+        }
+        setErrors({ form: data.data || "Failed to fetch server" });
+      } else {
+        setFormData(data.data);
+      }
+    } catch (err) {
+      // console.error(err);
+      setErrors({ form: "Error fetching server" });
+    } finally {
+      setFetching(false);
+    }
+  };
+
+  fetchServer();
+}, [id]);
 
   // Handle submit
   const handleSubmit = async (e) => {
@@ -122,7 +125,7 @@ function EditServer({ id }) {
     setLoading(true);
     try {
       const response = await fetch(`${API_BASE}/servers/${id}`, {
-        method: "PUT", // or PATCH
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`,
@@ -143,14 +146,15 @@ function EditServer({ id }) {
       }
 
       alert(data.data[0] || "Server updated successfully!");
-      navigate("/servers"); // redirect back to list
-
+      navigate("/servers"); // redirect back to server list
     } catch (err) {
       console.error(err);
       setErrors({ form: "Error updating server" });
     } finally {
       setLoading(false);
     }
+
+    // console.log(formData);
   };
 
   if (fetching) return <p>Loading server data...</p>;
@@ -168,9 +172,7 @@ function EditServer({ id }) {
               onChange={handleChange}
               isInvalid={!!errors.name}
             />
-            <Form.Control.Feedback type="invalid">
-              {errors.name}
-            </Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">{errors.name}</Form.Control.Feedback>
           </FloatingLabel>
         </Col>
         <Col md>
@@ -203,9 +205,7 @@ function EditServer({ id }) {
               onChange={handleChange}
               isInvalid={!!errors.ip_address}
             />
-            <Form.Control.Feedback type="invalid">
-              {errors.ip_address}
-            </Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">{errors.ip_address}</Form.Control.Feedback>
           </FloatingLabel>
         </Col>
         <Col md>
@@ -216,9 +216,7 @@ function EditServer({ id }) {
               onChange={handleChange}
               isInvalid={!!errors.cpu_cores}
             />
-            <Form.Control.Feedback type="invalid">
-              {errors.cpu_cores}
-            </Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">{errors.cpu_cores}</Form.Control.Feedback>
           </FloatingLabel>
         </Col>
         <Col md>
@@ -229,9 +227,7 @@ function EditServer({ id }) {
               onChange={handleChange}
               isInvalid={!!errors.ram_mb}
             />
-            <Form.Control.Feedback type="invalid">
-              {errors.ram_mb}
-            </Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">{errors.ram_mb}</Form.Control.Feedback>
           </FloatingLabel>
         </Col>
         <Col md>
@@ -242,19 +238,12 @@ function EditServer({ id }) {
               onChange={handleChange}
               isInvalid={!!errors.storage_gb}
             />
-            <Form.Control.Feedback type="invalid">
-              {errors.storage_gb}
-            </Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">{errors.storage_gb}</Form.Control.Feedback>
           </FloatingLabel>
         </Col>
       </Row>
 
-      <Button
-        type="submit"
-        variant="primary"
-        className="mt-3"
-        disabled={loading}
-      >
+      <Button type="submit" variant="primary" className="mt-3" disabled={loading}>
         {loading ? "Updating..." : "Update Server"}
       </Button>
     </Form>

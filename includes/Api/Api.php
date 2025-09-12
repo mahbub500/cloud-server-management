@@ -144,10 +144,7 @@ class API extends WP_REST_Controller{
         switch ( $method ) {
             case 'GET':
                 return $this->get_server( $request );
-
-            case 'POST': // if you want to allow POST updates
             case 'PUT':
-            case 'PATCH':
                 return $this->update_server( $request );
 
             case 'DELETE':
@@ -309,7 +306,7 @@ class API extends WP_REST_Controller{
      */
     public function get_server( $request ) {
         global $wpdb;
-        $id = (int) $request['id'];
+        $id = (int) $request['ids'];
 
         $server = $wpdb->get_row( $wpdb->prepare("SELECT * FROM {$this->table} WHERE id = %d", $id) );
         if (!$server) return $this->response_error('Server not found.');

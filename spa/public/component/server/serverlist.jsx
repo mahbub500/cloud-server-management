@@ -3,6 +3,7 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import { API_BASE } from '../../config.js';
+import { useNavigate } from "react-router-dom";
 
 function ServerList() {
   const [servers, setServers] = useState([]);
@@ -10,6 +11,9 @@ function ServerList() {
   const [error, setError] = useState("");
   const [selected, setSelected] = useState([]);
   const [deleting, setDeleting] = useState(false);
+
+  const navigate = useNavigate();
+
 
   const deleteCookie = (name) => {
     document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT;';
@@ -197,7 +201,7 @@ function ServerList() {
                   variant="warning" 
                   size="sm" 
                   className="me-2"
-                  onClick={() => handleEdit(server.id)}
+                  onClick={() => navigate(`/servers/edit/${server.id}`)}
                 >
                   Edit
                 </Button>
