@@ -83,7 +83,7 @@ function ServerList() {
         setError(data.data || "Failed to fetch servers");
         deleteCookie('authToken');
         deleteCookie('isLoggedIn');
-        window.location.reload();
+        // window.location.reload();
       }
     } catch (err) {
       setError("Something went wrong");
