@@ -178,6 +178,7 @@ function ServerList() {
           <option value="aws">AWS</option>
           <option value="digitalocean">DigitalOcean</option>
           <option value="vultr">Vultr</option>
+          <option value="other">Other</option>
         </Form.Select>
         <Form.Select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
           <option value="">All Status</option>
