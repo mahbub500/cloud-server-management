@@ -1,7 +1,7 @@
 # 🌥️ Cloud Server Management – WordPress Plugin
 
 ### **Track chosen:** C Full Stuck
-### **Time spent:** 10 hours.
+### **Time spent:** Approximately 10 hours.
 
 A WordPress plugin to manage cloud servers (AWS, DigitalOcean, Vultr, and more) via REST API.  
 Easily create, list, edit, and delete servers using authentication tokens.  
