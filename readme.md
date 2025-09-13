@@ -217,7 +217,8 @@ Use the `[csm_app]` shortcode to embed the Cloud Server Management frontend on a
 
 ### Sign up
 ![Sign Up](assets/img/server-signup.png)
-### Longin
+
+### Server List
 ![Server List](assets/img/server-list.png)
 ### **Notes**
 - Requires valid token authentication.
