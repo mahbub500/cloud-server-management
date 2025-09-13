@@ -3,7 +3,7 @@
  * Plugin Name: Cloud Server Management
  * Description: Cloud server management
  * Plugin URI: https://techwithmahbub.com/
- * Author: WpPluginHub, Inc
+ * Author: Mahbub
  * Author URI: https://techwithmahbub.com/
  * Version: 0.9
  * Text Domain: cloud-server-management
