@@ -10,7 +10,7 @@ Easily create, list, edit, and delete servers using authentication tokens.
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/mahbub500/cloud-server-managment.git
+   git clone https://github.com/mahbub500/cloud-server-management.git
    cd cloud-server-managment
    ```
 
