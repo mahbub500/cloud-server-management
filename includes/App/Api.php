@@ -1,5 +1,5 @@
 <?php
-namespace CloudServerManagement\API;
+namespace CloudServerManagement\App;
 
 defined( 'ABSPATH' ) || exit;
 

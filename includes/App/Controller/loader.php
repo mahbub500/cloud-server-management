@@ -1,6 +1,6 @@
 <?php
 namespace CloudServerManagement\App\Controller;
-use CloudServerManagement\API\Api;
+use CloudServerManagement\App\Api;
 use CloudServerManagement\App\Front;
 use CloudServerManagement\App\Shortcode;
 if ( ! defined( 'ABSPATH' ) ) {
