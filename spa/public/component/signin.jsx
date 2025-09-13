@@ -10,8 +10,6 @@ function SignIn({ setIsLoggedIn }) {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
-  console.log( API_BASE );
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -30,7 +28,8 @@ function SignIn({ setIsLoggedIn }) {
         document.cookie = `isLoggedIn=true; path=/; max-age=${7*24*60*60}`;
 
         setIsLoggedIn(true); // ✅ Show <Server /> component
-        setMessage(`Login successful! Welcome ${data.data.username}`);
+        setMessage(`Login successful! Welcome ${data.data?.username || 'User'}`);
+
       } else {
         setMessage(data.data || "Login failed");
       }
