@@ -93,8 +93,6 @@ Authorization: Bearer your_generated_token
 
 ---
 
-### 4️⃣ List Servers
-![Server List](assets/img/server-list.png)
 **Endpoint:**
 ```
 GET {siteurl}/wp-json/csm/v1/servers
@@ -206,6 +204,17 @@ Use the `[csm_app]` shortcode to embed the Cloud Server Management frontend on a
 
 ### **Usage**
 1. Create a WordPress page and add the shortcode:
+
+2. Publish the page.
+
+### **Behavior**
+- Displays Sign In / Sign Up buttons for unauthenticated users.
+- Authenticated users are redirected to the dashboard.
+- Dashboard shows server list and actions (create/edit/delete).
+![Server List](assets/img/server-list.png)
+### **Notes**
+- Requires valid token authentication.
+- Token expires after 1 hour.
 
 ---
 ## 🐛 Debugging Challenges :
