@@ -200,6 +200,13 @@ Authorization: Bearer your_generated_token
   "message": "Selected server(s) deleted successfully."
 }
 ```
+# 📌 Frontend Shortcode `[csm_app]`
+
+Use the `[csm_app]` shortcode to embed the Cloud Server Management frontend on any page.
+
+### **Usage**
+1. Create a WordPress page and add the shortcode:
+
 ---
 ## 🐛 Debugging Challenges :
 ### 🛡️ Validation Edge Case: Duplicate IPs
