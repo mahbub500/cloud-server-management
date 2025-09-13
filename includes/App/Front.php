@@ -68,9 +68,11 @@ class Front {
         );
         $localized = [
             'ajaxurl'   => admin_url( 'admin-ajax.php' ),
-            'root'  => esc_url_raw( rest_url( 'csm/v1' ) ),
-            '_wpnonce' => wp_create_nonce( 'wp_rest' ),
+            'root'      => esc_url_raw( rest_url( 'csm/v1' ) ),
+            '_wpnonce'  => wp_create_nonce( 'wp_rest' ),
+            'siteUrl'   => get_site_url(), // ✅ pass site URL
         ];
+
         wp_localize_script( 'csm', 'CSM_API', $localized );
-    }
+            }
 }
