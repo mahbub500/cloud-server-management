@@ -42,8 +42,8 @@ require_once CSM_PLUGIN_DIR . 'includes/functions.php';
 /**
  * Activation / Deactivation Hooks
  */
-register_activation_hook( __FILE__, array( __NAMESPACE__ . '\App\Activator', 'activate' ) );
-register_deactivation_hook( __FILE__, array( __NAMESPACE__ . '\App\Deactivator', 'deactivate' ) );
+register_activation_hook( __FILE__, array( __NAMESPACE__ . '\App\Controller\Activator', 'activate' ) );
+register_deactivation_hook( __FILE__, array( __NAMESPACE__ . '\App\Controller\Deactivator', 'deactivate' ) );
 
 /**
  * Run plugin when all plugins are loaded
