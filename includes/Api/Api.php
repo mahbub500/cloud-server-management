@@ -372,7 +372,7 @@ class API extends WP_REST_Controller{
      */
     public function update_server( $request ) {
         global $wpdb;
-        $id   = (int) $request['id'];
+        $id   = (int) $request['ids'];
         $data = $request->get_params();
 
         if ( empty( $id ) ) {
