@@ -211,6 +211,13 @@ Use the `[csm_app]` shortcode to embed the Cloud Server Management frontend on a
 - Displays Sign In / Sign Up buttons for unauthenticated users.
 - Authenticated users are redirected to the dashboard.
 - Dashboard shows server list and actions (create/edit/delete).
+
+### Longin
+![Login](assets/img/server-login.png)
+
+### Sign up
+![Sign Up](assets/img/server-signup.png)
+### Longin
 ![Server List](assets/img/server-list.png)
 ### **Notes**
 - Requires valid token authentication.
