@@ -4,10 +4,7 @@
             "name": "Mahbub",
             "email": "mahbubmr500@gmail.com"
         }
-    ],
-    "require": {
-        "wppluginhub/plugin": "dev-master"
-    },
+    ],    
     "autoload": {
         "psr-4": {
             "CloudServerManagement\\": "includes/"

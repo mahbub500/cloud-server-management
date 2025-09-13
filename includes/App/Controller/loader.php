@@ -1,6 +1,6 @@
 <?php
 namespace CloudServerManagement\App\Controller;
-use CloudServerManagement\API\API;
+use CloudServerManagement\API\Api;
 use CloudServerManagement\App\Front;
 use CloudServerManagement\App\Shortcode;
 if ( ! defined( 'ABSPATH' ) ) {
@@ -16,7 +16,7 @@ class Loader {
             $hortcode = new Shortcode();
         }
         // API
-        $rest = new API();
+        $rest = new Api();
     }
 
     

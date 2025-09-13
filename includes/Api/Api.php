@@ -1,5 +1,5 @@
 <?php
-namespace CloudServerManagement\Api;
+namespace CloudServerManagement\API;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -10,7 +10,7 @@ use WP_REST_Request;
 use WP_REST_Controller;
 use WP_REST_Server;
 
-class API extends WP_REST_Controller{
+class Api extends WP_REST_Controller{
 
     use Rest;
     use Hook;
