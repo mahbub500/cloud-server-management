@@ -10,6 +10,8 @@ function SignIn({ setIsLoggedIn }) {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
+  console.log( API_BASE );
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 

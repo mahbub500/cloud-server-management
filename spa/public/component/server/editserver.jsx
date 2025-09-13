@@ -5,7 +5,7 @@ import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
-import { API_BASE } from "../../config.js";
+import { API_BASE, SITE_URL } from "../../config.js";
 
 function EditServer() {
   const { id } = useParams(); // Get ID from URL
@@ -93,7 +93,7 @@ function EditServer() {
         if (data?.data?.[0]?.toLowerCase()?.includes("token")) {
           deleteCookie("authToken");
           deleteCookie("isLoggedIn");
-          window.location.reload();
+          window.location.href = SITE_URL;  
         }
         setErrors({ form: data.data || "Failed to fetch server" });
       } else {
@@ -140,6 +140,7 @@ function EditServer() {
           deleteCookie("authToken");
           deleteCookie("isLoggedIn");
           window.location.reload();
+
         }
         setErrors({ form: data.data || "Something went wrong!" });
         return;

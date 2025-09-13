@@ -3,7 +3,7 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import Form from 'react-bootstrap/Form';
-import { API_BASE } from '../../config.js';
+import { API_BASE, SITE_URL } from '../../config.js';
 import { useNavigate } from "react-router-dom";
 
 function ServerList() {
@@ -87,6 +87,14 @@ function ServerList() {
     }
   };
 
+   const handleLogout = () => {
+    // Remove login cookie
+      deleteCookie("authToken");
+      deleteCookie("isLoggedIn");
+      // Redirect to login page
+      window.location.href = SITE_URL;
+  };
+
   const fetchServers = async () => {
     setLoading(true);
     setError("");
@@ -124,9 +132,7 @@ function ServerList() {
       } else if (data.success === false) {
         if (data.data?.[0]?.toLowerCase().includes("token")) {
           setError(data.data || "Failed to fetch servers");
-          deleteCookie("authToken");
-          deleteCookie("isLoggedIn");
-          window.location.reload();
+          handleLogout();
         }
       }
     } catch (err) {
@@ -167,6 +173,10 @@ function ServerList() {
             setPage(1); // reset to first page
           }}>
             Clear Filters
+          </Button>
+          {/* Logout button */}
+          <Button variant="outline-dark" onClick={handleLogout}>
+            Logout
           </Button>
         </div>
       </div>

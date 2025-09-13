@@ -6,7 +6,7 @@ import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
 
 import SignIn from "../../component/signin";
-import { API_BASE } from '../../config.js';
+import { API_BASE, SITE_URL } from '../../config.js';
 
 function CreateServer() {
   const [formData, setFormData] = useState({
@@ -92,8 +92,7 @@ function CreateServer() {
         if (data.data[0].toLowerCase().includes("token")) {
           deleteCookie('authToken');
           deleteCookie('isLoggedIn');
-          window.location.reload();
-          
+          window.location.href = SITE_URL;          
         }
 
         // Other API errors
