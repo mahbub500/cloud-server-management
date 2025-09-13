@@ -38,7 +38,7 @@ POST {siteurl}/wp-json/csm/v1/signup
 ### 2️⃣ Signin (Generate Token)
 **Endpoint:**
 ```
-POST {siteurl}/wp-json/csm/v1/sign
+POST {siteurl}/wp-json/csm/v1/login
 ```
 
 **Response Example:**
