@@ -3,6 +3,7 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import Form from 'react-bootstrap/Form';
+import Card from "react-bootstrap/Card";
 import { API_BASE, SITE_URL } from '../../config.js';
 import { useNavigate } from "react-router-dom";
 
@@ -18,6 +19,8 @@ function ServerList() {
   const [providerFilter, setProviderFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [search, setSearch] = useState("");
+
+  const [selectedServer, setSelectedServer] = useState(null); // 👈 single server details
 
   const navigate = useNavigate();
 
@@ -53,6 +56,7 @@ function ServerList() {
       if (response.ok) {
         setServers(prev => prev.filter(s => s.id !== id));
         setSelected(prev => prev.filter(sid => sid !== id));
+        if (selectedServer?.id === id) setSelectedServer(null); // reset if deleting the viewed server
       }
     } catch (err) {
       console.error(err);
@@ -79,6 +83,9 @@ function ServerList() {
       if (response.ok) {
         setServers(prev => prev.filter(s => !selected.includes(s.id)));
         setSelected([]);
+        if (selectedServer && selected.includes(selectedServer.id)) {
+          setSelectedServer(null);
+        }
       }
     } catch (err) {
       console.error(err);
@@ -87,12 +94,10 @@ function ServerList() {
     }
   };
 
-   const handleLogout = () => {
-    // Remove login cookie
-      deleteCookie("authToken");
-      deleteCookie("isLoggedIn");
-      // Redirect to login page
-      window.location.href = SITE_URL;
+  const handleLogout = () => {
+    deleteCookie("authToken");
+    deleteCookie("isLoggedIn");
+    window.location.href = SITE_URL;
   };
 
   const fetchServers = async () => {
@@ -115,7 +120,7 @@ function ServerList() {
         page,
         per_page: perPage,
         provider: providerFilter,
-        status: statusFilter ,
+        status: statusFilter,
         search: search
       });
 
@@ -124,8 +129,7 @@ function ServerList() {
       });
 
       const data = await response.json();
-
-      console.log( data );
+      console.log(data);
 
       if (response.ok) {
         setServers(data.data || []);
@@ -153,8 +157,42 @@ function ServerList() {
   );
   if (error) return <p className="text-danger">{error}</p>;
 
+  // 👇 If a server is selected, show its details view
+  if (selectedServer) {
+    return (
+      <Card className="p-3">
+        <h4>Server Details</h4>
+        <p><b>Name:</b> {selectedServer.name}</p>
+        <p><b>Provider:</b> {selectedServer.provider}</p>
+        <p><b>IP Address:</b> {selectedServer.ip_address}</p>
+        <p><b>CPU Cores:</b> {selectedServer.cpu_cores}</p>
+        <p><b>RAM:</b> {selectedServer.ram_mb} MB</p>
+        <p><b>Storage:</b> {selectedServer.storage_gb} GB</p>
+        <p><b>Status:</b> {selectedServer.status}</p>
+        <div className="d-flex gap-2">
+          <Button variant="secondary" onClick={() => setSelectedServer(null)}>
+            Back to List
+          </Button>
+          <Button 
+            variant="warning"
+            onClick={() => navigate(`/servers/edit/${selectedServer.id}`)}
+          >
+            Edit
+          </Button>
+          <Button 
+            variant="danger"
+            onClick={() => handleDelete(selectedServer.id)}
+          >
+            Delete
+          </Button>
+        </div>
+      </Card>
+    );
+  }
+
   return (
     <div>
+      {/* Top Controls */}
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h3>Server List</h3>
         <div className="d-flex gap-2">
@@ -170,18 +208,17 @@ function ServerList() {
             setProviderFilter("");
             setStatusFilter("");
             setSearch("");
-            setPage(1); // reset to first page
+            setPage(1);
           }}>
             Clear Filters
           </Button>
-          {/* Logout button */}
           <Button variant="outline-dark" onClick={handleLogout}>
             Logout
           </Button>
         </div>
       </div>
 
-      {/* Filters & Search */}
+      {/* Filters */}
       <div className="d-flex gap-2 mb-3">
         <Form.Select value={providerFilter} onChange={e => setProviderFilter(e.target.value)}>
           <option value="">All Providers</option>
@@ -201,8 +238,6 @@ function ServerList() {
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
-
-
       </div>
 
       {/* Server Table */}
@@ -229,8 +264,12 @@ function ServerList() {
         </thead>
         <tbody>
           {servers.map((server, index) => (
-            <tr key={server.id}>
-              <td>
+            <tr 
+              key={server.id}
+              style={{ cursor: "pointer" }}
+              onClick={() => setSelectedServer(server)} // 👈 show details
+            >
+              <td onClick={(e) => e.stopPropagation()}>
                 <input
                   type="checkbox"
                   checked={selected.includes(server.id)}
@@ -245,7 +284,7 @@ function ServerList() {
               <td>{server.ram_mb} MB</td>
               <td>{server.storage_gb} GB</td>
               <td>{server.status}</td>
-              <td>
+              <td onClick={(e) => e.stopPropagation()}>
                 <Button 
                   variant="warning" 
                   size="sm" 
